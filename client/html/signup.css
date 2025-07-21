@@ -1,0 +1,83 @@
+body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+    }
+    .signup-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 15px;
+    }
+    .form-wrapper {
+      max-width: 500px;
+      width: 100%;
+    }
+    footer {
+      background-color: #172158;
+      color: #fff;
+      padding: 30px;
+    }
+    footer a {
+      color: #ccc;
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: #fff;
+    }
+    .promo-bar {
+      background: #172158;
+      color: white;
+      text-align: center;
+      padding: 5px 0;
+      font-size: 14px;
+    }
+    .google-btn {
+      background: white;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .google-btn img {
+      width: 18px;
+      margin-right: 10px;
+    }
+    .promo-bar {
+    background: #172158;
+    color: white;
+    text-align: center;
+    padding: 5px 0;
+    font-size: 14px;
+    height: 40px;
+    justify-content: center;
+}
+.signup-image {
+  max-width: 100%;     
+  width: 800px;         
+  height: auto;
+}
+
+footer {
+  font-size: 13px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+.forgot-password-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh; 
+}
