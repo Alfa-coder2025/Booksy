@@ -28,7 +28,20 @@ const verifyOtpController = async (req, res) => {
     const { identifier, otp } = req.body;
     const user=req.session.sessionData.defaultSession.signupData;
     const response = await verifyOtp(identifier, otp,user);
-    res.json(response);
+    if (response.verified) {
+      // Hashing password and create user
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+
+      await userModel.create({ ...userData, password: hashedPassword });
+
+      return res.json({
+        success: true,
+        message: "OTP verified and account created",
+      });
+    }
+     return res.json(response);
+
   } catch (err) {
     res
       .status(500)
@@ -47,6 +60,27 @@ const resendOtpController = async (req, res) => {
     res.status(500).send({ success: false, message: err.message });
   }
 };
+
+//login Controller
+
+const { loginUser } = require("../service/auth/auth.service");
+
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const result = await loginUser(email, password);
+
+    if (!result.success) {
+      return res.status(401).json(result);
+    }
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
 
 module.exports = {
   sendOtpController,

@@ -113,8 +113,43 @@ export const verifyotp = async (event) => {
   }
 };
 
-//login 
+
+// login
 export const login = async (event) => {
+  event.preventDefault();
+  const email = event.target.email.value.trim();
+  const password = event.target.password.value.trim();
+
+  try {
+    const response = await fetch("http://localhost:8000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Save token & role
+      sessionStorage.setItem("token", result.token);
+      sessionStorage.setItem("user", JSON.stringify(result.user));
+
+      // Redirect based on role
+      if (result.user.role === "admin") {
+        window.location.href = "/admindashboard";
+      } else {
+        window.location.href = "/landingpage";
+      }
+    } else {
+      alert(result.message || "Login failed");
+    }
+  } catch (error) {
+    alert("An error occurred. Please try again");
+  }
+};
+
+
+/*export const login = async (event) => {
   event.preventDefault();
   const email = event.target.email.value.trim();
   const password = event.target.password.value.trim();
@@ -146,7 +181,7 @@ export const login = async (event) => {
   } catch (error) {
     alert("An error occurred. Please try again");
   }
-};
+};*/
 //admin login
 
 // Admin login function
@@ -199,3 +234,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginForm) loginForm.addEventListener("submit", login);
 
 });
+//1. implement bcrypt in backend (use chat gpt)
+//2. login functionality (create user account,then verify otp,click on login link..same username and same password=>
+ // check login method is triggering or not in eventListener.
+ //put console for getting the uservalues
+//check api triggering or not?
+//3. JSON web token=> redirect properly
+//4.create adminuser to db(using schema)
