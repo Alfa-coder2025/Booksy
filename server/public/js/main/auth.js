@@ -1,0 +1,201 @@
+
+
+
+
+export const signup = async (event) => {
+  event.preventDefault();
+
+
+
+const username=event.target.username.value.trim();
+const phone=event.target.phone.value.trim();
+const email=event.target.email.value.trim();
+const password=event.target.password.value.trim();
+const confirmpassword=event.target.confirmpassword.value.trim();
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const user = {
+  username: username,
+  phone: phone,
+  email: email,
+  password: password,
+  confirmpassword: confirmpassword
+};
+
+//form validation
+
+if(username.length<4){
+  alert("Username must contain atleast 4 characters");
+  return;
+}
+if(phone.length!==10||isNaN(phone)){
+  alert("Phone number must be exactly 10 digits and contain only numbers");
+  return;
+}
+if (!emailRegex.test(email)) {
+  alert("Please enter a valid email address");
+  return;
+}
+if(password.length<4){
+  alert("Password must be atleast 4 characters");
+  return;
+}
+if(password!==confirmpassword){
+  alert("Passwords must match");
+  return;
+}
+
+
+try{
+  //const hashedPassword = await bcrypt.hash(password, 10);
+
+  const response=await fetch("http://localhost:8000/api/auth/send-otp",{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json",
+  },
+  body:JSON.stringify({identifier:email,user}),//add other details also
+
+});
+
+const result=await response.json();
+  if(response.ok||response.success){
+    sessionStorage.setItem('tempUser', JSON.stringify({
+        username,
+        phone,
+        email,
+        password,
+      }));
+    window.location.href = "/enterotp"; 
+  }
+  else{
+    alert(result.message||"Failed to send OTP");
+  }
+}
+catch(error){
+  alert("An error occured.Please try again");
+}
+
+};
+//verifyotp
+export const verifyotp = async (event) => {
+  event.preventDefault();
+  const otp = event.target.otp.value.trim();
+  const tempUser = JSON.parse(sessionStorage.getItem('tempUser'));
+
+  if (!tempUser) {
+    alert("Session expired. Please sign up again.");
+    window.location.href = "/signup";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:8000/api/auth/verify-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        identifier: tempUser.email,
+        otp
+      }),
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+      // OTP verified, creating user in database
+      alert("Account created successfully!,Click on the login");
+  
+    } else {
+      alert(result.message || "OTP verification failed");
+    }
+  } catch(error) {
+    alert("An error occurred. Please try again");
+  }
+};
+
+//login 
+export const login = async (event) => {
+  event.preventDefault();
+  const email = event.target.email.value.trim();
+  const password = event.target.password.value.trim();
+
+  try {
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      alert("User not found. Please sign up first.");
+      return;
+    }
+   // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      alert("Invalid credentials");
+      return;
+    }
+
+    // Login successful
+    // Store user data in session/local storage as needed
+    sessionStorage.setItem('user', JSON.stringify({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: 'user'
+    }));
+
+    window.location.href = "/dashboard";
+  } catch (error) {
+    alert("An error occurred. Please try again");
+  }
+};
+//admin login
+
+// Admin login function
+export const adminLogin = async (event) => {
+  event.preventDefault();
+  const email = event.target.email.value.trim();
+  const password = event.target.password.value.trim();
+
+  try {
+    // Check if admin exists
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      alert("Admin not found.");
+      return;
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      alert("Invalid credentials");
+      return;
+    }
+
+    // Login successful
+    sessionStorage.setItem('user', JSON.stringify({
+      id: admin._id,
+      username: admin.username,
+      email: admin.email,
+      role: 'admin'
+    }));
+
+    window.location.href = "/admin/dashboard";
+  } catch (error) {
+    alert("An error occurred. Please try again");
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const signupForm = document.getElementById("signupForm");
+
+  if (signupForm) signupForm.addEventListener("submit", signup);
+
+  const verifyOtpForm = document.getElementById("verifyotpform");
+  if (verifyOtpForm) {
+    verifyOtpForm.addEventListener("submit", verifyotp);
+
+  }
+
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) loginForm.addEventListener("submit", login);
+
+});

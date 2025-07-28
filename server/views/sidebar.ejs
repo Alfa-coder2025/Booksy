@@ -1,0 +1,36 @@
+ <aside class="sidebar bg-white p-3">
+     <a class="navbar-brand" href="#">
+      <img src="/assets/images/LOGO.png" alt="Logo" height="70">
+    </a>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'dashboard' ? 'active' : '' %>" href="/admindashboard">Dashboard</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'products' ? 'active' : '' %>" href="/products">Products</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'orderlists' ? 'active' : '' %>" href="/orderlists">Order Lists</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'users' ? 'active' : '' %>" href="/admin/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'salesreport' ? 'active' : '' %>" href="/salesreport">Sales Report</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'coupons' ? 'active' : '' %>" href="/coupons">Coupons</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'category' ? 'active' : '' %>" href="/category">Category</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'bannermanagement' ? 'active' : '' %>" href="/bannermanagement">Banner Management</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link <%= currentPage === 'offermanagement' ? 'active' : '' %>" href="/offermanagement">Offer Management</a>
+  </li>
+        
+        <li class="nav-item mt-4"><a class="nav-link text-danger" href="#">Logout</a></li>
+      </ul>
+    </aside>
