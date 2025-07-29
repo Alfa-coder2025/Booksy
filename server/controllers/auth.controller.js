@@ -1,3 +1,7 @@
+
+const bcrypt = require("bcrypt");
+
+
 const {
   sendOtp,
   verifyOtp,
@@ -26,26 +30,13 @@ const sendOtpController = async (req, res) => {
 const verifyOtpController = async (req, res) => {
   try {
     const { identifier, otp } = req.body;
-    const user=req.session.sessionData.defaultSession.signupData;
-    const response = await verifyOtp(identifier, otp,user);
-    if (response.verified) {
-      // Hashing password and create user
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+    const user = req.session.sessionData.defaultSession.signupData;
 
-      await userModel.create({ ...userData, password: hashedPassword });
+    const response = await verifyOtp(identifier, otp, user);
 
-      return res.json({
-        success: true,
-        message: "OTP verified and account created",
-      });
-    }
-     return res.json(response);
-
+    return res.json(response);
   } catch (err) {
-    res
-      .status(500)
-      .send({ success: false, message: err.message });
+    res.status(500).send({ success: false, message: err.message });
   }
 };
 
@@ -86,4 +77,5 @@ module.exports = {
   sendOtpController,
   verifyOtpController,
   resendOtpController,
+  loginController
 };

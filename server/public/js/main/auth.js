@@ -46,7 +46,7 @@ if(password!==confirmpassword){
 
 
 try{
-  //const hashedPassword = await bcrypt.hash(password, 10);
+
 
   const response=await fetch("http://localhost:8000/api/auth/send-otp",{
   method:"POST",
@@ -58,7 +58,7 @@ try{
 });
 
 const result=await response.json();
-  if(response.ok||response.success){
+  if(result.success){
     sessionStorage.setItem('tempUser', JSON.stringify({
         username,
         phone,
@@ -121,6 +121,7 @@ export const login = async (event) => {
   const password = event.target.password.value.trim();
 
   try {
+    
     const response = await fetch("http://localhost:8000/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -128,7 +129,7 @@ export const login = async (event) => {
     });
 
     const result = await response.json();
-
+    
     if (response.ok) {
       // Save token & role
       sessionStorage.setItem("token", result.token);
@@ -184,40 +185,13 @@ export const login = async (event) => {
 };*/
 //admin login
 
-// Admin login function
-export const adminLogin = async (event) => {
-  event.preventDefault();
-  const email = event.target.email.value.trim();
-  const password = event.target.password.value.trim();
 
-  try {
-    // Check if admin exists
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      alert("Admin not found.");
-      return;
-    }
-
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      alert("Invalid credentials");
-      return;
-    }
-
-    // Login successful
-    sessionStorage.setItem('user', JSON.stringify({
-      id: admin._id,
-      username: admin.username,
-      email: admin.email,
-      role: 'admin'
-    }));
-
-    window.location.href = "/admin/dashboard";
-  } catch (error) {
-    alert("An error occurred. Please try again");
-  }
+//logout
+export const logout = () => {
+  sessionStorage.clear();
+  window.location.href = "/login";
 };
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signupForm");

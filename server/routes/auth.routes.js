@@ -1,5 +1,6 @@
 const express = require("express");
 const { sendOtpController,verifyOtpController,resendOtpController } = require("../controllers/auth.controller");
+const { loginController } = require('../controllers/auth.controller');
 
 const router = express.Router();
 

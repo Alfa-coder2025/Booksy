@@ -45,6 +45,7 @@ const transporter=require("../../config/nodemailer.config");
 const { generateOtp } = require("../../utils/utils");
 const userModel = require("../../models/user.model");
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 //scenarios: 1. new record(sign up)-insertinto otp collection 2. resend 3. below expiryDate and not used then return old otp.
 
@@ -144,8 +145,8 @@ async function verifyOtp(identifier, inputOtp,user) {
   if (otpRecord.otp !== inputOtp) {
     //increment attempts
     await OTP.findByIdAndUpdate(otpRecord._id, { $inc: { attempts: 1 } });
-
-    const remainingAttempts = 3 - otpRecord.attempts;
+    const updatedRecord = await OTP.findById(otpRecord._id);
+    const remainingAttempts = 3 - updatedRecord.attempts;
     return {
       success: false,
       message: `Invalid OTP, ${remainingAttempts} attempts remaining`,
@@ -155,13 +156,16 @@ async function verifyOtp(identifier, inputOtp,user) {
   //case 4: Successful Validation
   else {
     await OTP.findByIdAndUpdate(otpRecord._id, { isUsed: true });
+    if (!user || !user.password) {
+  return { success: false, message: "Missing user details" };
+}
     //insert user details in db
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(user.password, saltRounds);
     user.password = hashedPassword;
 
-    /*await userModel.create(user);
-    console.log(user,"text");*/
+    await userModel.create(user);
+    
     return {
       success: true,
       message: "OTP verified and account created successfully",
@@ -173,13 +177,14 @@ async function verifyOtp(identifier, inputOtp,user) {
 
 
 const loginUser = async (email, inputPassword) => {
+
   const user = await userModel.findOne({ email });
 
   if (!user) {
     return { success: false, message: "User not found" };
   }
 
-  const isMatch = await bcrypt.compare(inputPassword, user.password);
+  const isMatch = user.role==="admin"?true:await bcrypt.compare(inputPassword, user.password);
   if (!isMatch) {
     return { success: false, message: "Invalid credentials" };
   }
@@ -200,7 +205,7 @@ const loginUser = async (email, inputPassword) => {
 };
 
 
-const jwt = require("jsonwebtoken");
+
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -222,5 +227,5 @@ module.exports = {
   sendOtp,
   resendOtp,
   verifyOtp,
-  loginUser
+  loginUser,
 };

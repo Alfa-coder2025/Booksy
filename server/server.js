@@ -46,12 +46,16 @@ app.use((req, res, next) => {
   next();
 });
 
+//Backend APIs
+app.use("/api/auth", require("./routes/auth.routes"));
+
+
 // 👇 Make session data available to all EJS views
 app.use((req, res, next) => {
   res.locals.session = req.session.sessionData;
   next();
 });
-
+//UI APIs
 app.get("/signup", (req, res) => {
   res.render("signup", { session: req.session.sessionData.defaultSession });
 });

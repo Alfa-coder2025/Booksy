@@ -29,10 +29,12 @@ const otpSchema = new mongoose.Schema(
     deleteAt: {
       type: Date,
     },
+    
   },
   {
     collection: "otp", // Optional: explicitly name the collection
-  }
+  },
+  {timestamp:true},
 );
 
 otpSchema.index({ deleteAt: 1 }, { expireAfterSeconds: 0 });
