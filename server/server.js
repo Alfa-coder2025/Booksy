@@ -8,6 +8,7 @@ const livereload = require("livereload");
 const connectLivereload = require("connect-livereload");
 const session = require("express-session");
 const defaultSession = require("./utils/session");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -48,6 +49,11 @@ app.use((req, res, next) => {
 
 //Backend APIs
 app.use("/api/auth", require("./routes/auth.routes"));
+
+app.use("/api", adminRoutes); 
+app.use("/api/category",require("./routes/category.routes"));
+
+//import admin.api/admin
 
 
 // 👇 Make session data available to all EJS views
@@ -107,10 +113,22 @@ app.get("/admindashboard", (req, res) => {
 app.get("/admin-users", (req, res) => {
   res.render("adminusers", {
     session: req.session.sessionData.defaultSession,
-    currentPage: "users"
+    currentPage: "users",
+    users: []
   });
 });
 
+app.get('/admin-category', (req, res) => {
+  res.render('category',{ currentPage: 'category' });
+});
+
+app.get('/admin-products', (req, res) => {
+  res.render('adminproducts',{ currentPage: 'adminproducts',products: []});
+});
+
+app.get('/admin-addproducts',(req,res)=>{
+  res.render('adminaddproducts',{currentPage:'adminaddproducts',addproducts});
+})
 app.use("/api/auth", authRoutes);
 
 //Notify browser on change

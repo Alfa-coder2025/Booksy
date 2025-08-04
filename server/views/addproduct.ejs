@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<h2>Add Products</h2>
+<body>
+
+   <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <%- include('sidebar') %>
+      </div>
+      <div class="col-md-10 content-area">
+        </div>
+        <!-- Main content -->
+  <div class="main-content">
+    <h2>Add new</h2>
+    <form>
+      <div class="row">
+        <!-- Left side form -->
+        <div class="col-md-7">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Product Name</label>
+            <input type="text" class="form-control" placeholder="Type name here">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Description</label>
+            <textarea class="form-control" rows="4" placeholder="Type description"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Offer</label>
+            <input type="text" class="form-control" placeholder="Type here">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Stock Quantity</label>
+            <input type="number" class="form-control" placeholder="Enter quantity">
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label class="form-label fw-bold">Regular Price</label>
+              <input type="text" class="form-control" placeholder="₹ 999">
+            </div>
+            <div class="col">
+              <label class="form-label fw-bold">Sale Price</label>
+              <input type="text" class="form-control" placeholder="₹ 599">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Category</label>
+            <input type="text" class="form-control" placeholder="Type Category here">
+          </div>
+
+          <div class="d-flex gap-3 mt-4">
+            <button type="button" class="btn btn-outline-primary">Add New Category <i class="bi bi-plus"></i></button>
+            <button type="submit" class="btn btn-primary">ADD PRODUCT</button>
+          </div>
+        </div>
+
+        <!-- Right side image -->
+        <div class="col-md-5 d-flex justify-content-center align-items-start">
+          <img src="/images/book-cover.png" class="img-fluid" alt="Book Cover" style="max-width: 80%;">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

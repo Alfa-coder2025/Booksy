@@ -9,8 +9,6 @@
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
-
-</head>
 <body>
   <div class="container-fluid">
     <div class="row">
@@ -41,32 +39,30 @@
               <th>Update</th>
             </tr>
           </thead>
-          <tbody>
-            <% const users = [
-              { name: 'Amal', email: 'amal@gmail.com', mobile: '12345678910', status: 'Block' },
-              { name: 'Vimal', email: 'vimal@gmail.com', mobile: '12345678910', status: 'Unblock' },
-              { name: 'Kiran', email: 'kiran@gmail.com', mobile: '12345678910', status: 'Block' },
-              { name: 'Anas', email: 'anas@gmail.com', mobile: '12345678910', status: 'Block' },
-              { name: 'Ziyad', email: 'ziyad@gmail.com', mobile: '12345678910', status: 'Block' },
-              { name: 'Vishnu', email: 'vishnu@gmail.com', mobile: '12345678910', status: 'Block' }
-            ];
-            users.forEach((u, i) => { %>
-              <tr>
-                <td><%= i + 1 %></td>
-                <td><%= u.name %></td>
-                <td><%= u.email %></td>
-                <td><%= u.mobile %></td>
-                <td>
-                 <form action="/admin/users/<%= u._id %>/toggle-status" method="POST" style="display:inline;">
-                 <button type="submit" class="btn btn-sm btn-status <%= u.status === 'Block' ? 'btn-danger' : 'btn-success' %>">
-                 <%= u.status %>
-               </button>
-                </form>
+         <!--tbody-->
+       <tbody>
+  <% if (users.length === 0) { %>
+    <tr>
+      <td colspan="5" class="text-center text-muted py-4">No users available.</td>
+    </tr>
+  <% } else { %>
+    <% users.forEach((user, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.phone %></td>
+        <td>
+          <a href="/admin/users/<%= user._id %>/edit" class="btn btn-sm btn-outline-primary me-1">
+            <i class="fas fa-pen"></i>
+          </a>
+        </td>
+      </tr>
+    <% }) %>
+  <% } %>
+</tbody>
 
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
+
         </table>
       </div>
     </div>

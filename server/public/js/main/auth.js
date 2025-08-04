@@ -132,8 +132,8 @@ export const login = async (event) => {
     
     if (response.ok) {
       // Save token & role
-      sessionStorage.setItem("token", result.token);
-      sessionStorage.setItem("user", JSON.stringify(result.user));
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
 
       // Redirect based on role
       if (result.user.role === "admin") {
@@ -208,10 +208,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginForm) loginForm.addEventListener("submit", login);
 
 });
-//1. implement bcrypt in backend (use chat gpt)
-//2. login functionality (create user account,then verify otp,click on login link..same username and same password=>
- // check login method is triggering or not in eventListener.
- //put console for getting the uservalues
-//check api triggering or not?
-//3. JSON web token=> redirect properly
-//4.create adminuser to db(using schema)
+//1.how to upload images and store in db(for category)
+//2. event listner for save=> add API needs to trigger(check for succes)
+//3. WHEN user clicks on edit,existing data need to populate on the modal pop up.
+//4.when user clicks on update=> event listener for Updae=>Add API should trigger
+//5. delete should work,,=>popup should provide to confirm before delete
+//6. apply pagination for getAll categories
+//7.sort the category table from backend
