@@ -208,10 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginForm) loginForm.addEventListener("submit", login);
 
 });
-//1.how to upload images and store in db(for category)
-//2. event listner for save=> add API needs to trigger(check for succes)
-//3. WHEN user clicks on edit,existing data need to populate on the modal pop up.
-//4.when user clicks on update=> event listener for Updae=>Add API should trigger
-//5. delete should work,,=>popup should provide to confirm before delete
-//6. apply pagination for getAll categories
-//7.sort the category table from backend
+
+//1.UI for products/Add new Products-pagination
+//2. Add Product -backend create APIs : addProducta api,getAll products ,updateProduct, deleteproduct
+//3. image resize and image size limit for uploads

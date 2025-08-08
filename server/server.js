@@ -52,6 +52,11 @@ app.use("/api/auth", require("./routes/auth.routes"));
 
 app.use("/api", adminRoutes); 
 app.use("/api/category",require("./routes/category.routes"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/api/users",require("./routes/users.routes"));
+//app.use("/api/product",require)
+
+
 
 //import admin.api/admin
 
@@ -127,7 +132,7 @@ app.get('/admin-products', (req, res) => {
 });
 
 app.get('/admin-addproducts',(req,res)=>{
-  res.render('adminaddproducts',{currentPage:'adminaddproducts',addproducts});
+  res.render('addproducts',{currentPage:'addproducts'});
 })
 app.use("/api/auth", authRoutes);
 

@@ -11,7 +11,7 @@ const authorSchema = new mongoose.Schema(
 const bookSchema = new mongoose.Schema(
   {
     bookName: { type: String, required: true },
-    author: { type: authorSchema, required: true },
+    author: { type: authorSchema },
     description: { type: String },
     regularPrice: { type: mongoose.Schema.Types.Double },
     publisher: { type: String },

@@ -1,4 +1,5 @@
 const Category = require("../models/category.model");
+const fs=require("fs");
 
 // 1. Create category
 const create = async (req, res) => {
@@ -16,15 +17,34 @@ const create = async (req, res) => {
   }
 };
 
-// 2. Get all categories
+// // 2. Get all categories
+// const getAll = async (req, res) => {
+//   try {
+//     const categories = await Category.find();
+//     res.json({ success: true, data: categories });
+//   } catch (err) {
+//     res.status(500).json({ success: false, error: "Server error" });
+//   }
+// };
+
+// 2. Get all categories with sorting
 const getAll = async (req, res) => {
   try {
-    const categories = await Category.find();
+    // Take sorting values from the query string (optional)
+    const sortBy = req.query.sortBy || "name"; // default: sort by name
+    const order = req.query.order === "desc" ? -1 : 1; // default: ascending
+
+    // Find and sort
+    const categories = await Category.find().sort({ [sortBy]: order });
+
     res.json({ success: true, data: categories });
   } catch (err) {
     res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
+module.exports = { getAll };
+
 
 // 3. Get single category by ID (NEW)
 const getById = async (req, res) => {
@@ -34,6 +54,8 @@ const getById = async (req, res) => {
       return res.status(404).json({ success: false, error: "Category not found" });
     }
     res.json({ success: true, data: category });
+
+
   } catch (err) {
     res.status(400).json({ success: false, error: "Invalid ID format" });
   }
@@ -57,41 +79,49 @@ const addItem = async (req, res) => {
 // 5. Delete category
 const deleteCategory = async (req, res) => {
   try {
+    console.log("result");
     const deleted = await Category.findByIdAndDelete(req.params.id);
+    console.log(deleted);
     if (!deleted) {
       return res.status(404).json({ success: false, error: "Category not found" });
     }
     res.json({ success: true, message: "Category deleted" });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    res.status(500).json({ success: false, error: err.message });
   }
 };
 
 
 //update
 
+
+
 const updateCategory = async (req, res) => {
   try {
-    console.log("result");
+    const categoryId = req.params.id;
+    const { name, showOnHomepage } = req.body;
+
     const updateData = {
-      name: req.body.name
+      name,
+      showOnHomepage: showOnHomepage === 'on' || showOnHomepage === true || showOnHomepage === 'true'
+
     };
 
     if (req.file) {
-      updateData.image = req.file.filename;
+      updateData.image = `/uploads/categories/${req.file.filename}`;
+
     }
 
-    const updated = await Category.findByIdAndUpdate(req.params.id, updateData, { new: true });
-
-    if (!updated) {
-      return res.status(404).json({ success: false, error: "Category not found" });
-    }
-
-    res.json({ success: true, data: updated });
+    const updated = await Category.findByIdAndUpdate(categoryId, updateData, { new: true });
+    console.log(updated);
+   
+    res.status(200).json({ message: 'Category updated successfully', data: updated ,success:true});
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Error updating category' });
   }
 };
+
 
 
 module.exports = {

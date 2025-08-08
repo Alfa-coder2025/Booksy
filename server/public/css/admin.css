@@ -222,12 +222,48 @@ body {
 }
 
 /* Add New Product Button */
+.content-area {
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  padding: 0 30px;
+}
+
+.search-box input {
+  max-width: 550px;
+  height: 38px;
+}
+
 .btn-primary {
-  border-radius: 10px;
-  padding: 10px 18px;
+  background-color: #1a4fff;
+  border-color: #1a4fff;
+  font-weight: 600;
+  font-size: 0.85rem; /* smaller font */
+  padding: 8px 18px; 
+}
+
+.btn-outline-primary {
+  border-width: 2px;
   font-weight: 600;
 }
 
+.card img {
+  max-width: 100%;
+  height: auto;
+}
+.book-cover-card {
+  min-height: 300px; /* taller */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.main-content label {
+  font-size: 0.95rem;
+}
+
+.form-control {
+  border-radius: 6px;
+  padding: 10px 14px;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
