@@ -13,26 +13,25 @@ const bookSchema = new mongoose.Schema(
     bookName: { type: String, required: true },
     author: { type: authorSchema },
     description: { type: String },
-    regularPrice: { type: mongoose.Schema.Types.Double },
+    regularPrice: { type: Number },
     publisher: { type: String },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
     language: { type: String },
     coverType: { type: String },
-    images: { type: [mongoose.Schema.Types.Mixed], default: [] },
+    images: { type: [String], default: [] },
     stockQuantity: { type: mongoose.Schema.Types.Int32 },
-    rating: { type: mongoose.Schema.Types.Int32 },
+    rating: { type: Number, min: 0, max: 5 },
     showAsTopSelling: { type: Boolean, default: false },
     showAsLatest: { type: Boolean, default: false },
     offer: { type: String },
-    salePrice: { type: mongoose.Schema.Types.Double },
-    totalPage: { type: mongoose.Schema.Types.Long },
+    salePrice: { type: Number },
+    totalPage: { type: Number },
     publishedDate: { type: Date },
-    cardDescription: { type: String },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }, 
+    cardDescription: { type: String }
   },
   {
-    collection: "Books"
+    collection: "Books",
+    timestamps: true 
   }
 );
 

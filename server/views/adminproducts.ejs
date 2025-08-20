@@ -9,9 +9,12 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="/js/main/pagination.js"></script>
+  <script src="/js/main/adminproducts.js"></script>
 </head>
 
 <body>
+
 
    <div class="container-fluid">
     <div class="row">
@@ -21,7 +24,7 @@
       <div class="col-md-10 content-area">
         <h3>Products</h3>
 <!-- Filter -->
-<div class="filter-box d-flex align-items-center gap-3 flex-wrap bg-white p-3 rounded shadow-sm">
+<div class="filter-box d-flex align-items-center gap-3 flex-wrap bg-white p-3 rounded shadow-sm" id="filter-products">
   <div class="d-flex align-items-center gap-2">
     <button class="btn btn-light border"><i class="fas fa-filter"></i></button>
     <span>Filter By</span>
@@ -42,14 +45,20 @@
     </select>
   </div>
   <div class="ms-auto">
-    <a href="/admin/products/new" class="btn btn-primary">
+    <a href="/admin-addproducts" class="btn btn-primary">
       <i class="fas fa-plus me-2"></i> Add New Product
     </a>
   </div>
 </div>
 
+
+          <div class="input-group mb-3">
+  <input type="text" id="productSearch" class="form-control" placeholder="Search Books by name">
+  <button class="btn btn-outline-secondary" type="button" id="clearProductSearch">Clear</button>
+</div>
+
 <!-- Products Table -->
-<table class="table table-hover mt-4 align-middle bg-white rounded shadow-sm overflow-hidden">
+<table class="table table-hover mt-4 align-middle bg-white rounded shadow-sm overflow-hidden" id="products-table-body">
   <thead class="table-light">
     <tr>
       <th>Image</th>
@@ -57,35 +66,27 @@
       <th>Category</th>
       <th>Author</th>
       <th>Price</th>
-      <th>Piece</th>
+      <th>Stock</th>
       <th class="text-center">Action</th>
     </tr>
   </thead>
-  <tbody>
-    <% const products = []; %>
-    <% if (products.length === 0) { %>
-      <tr>
-        <td colspan="7" class="text-center text-muted py-4">No products available.</td>
-      </tr>
-    <% } else { %>
-      <% products.forEach((p) => { %>
-        <tr>
-          <td><img src="<%= p.imageUrl %>" alt="Book" width="50"></td>
-          <td><%= p.name %></td>
-          <td><%= p.category %></td>
-          <td><strong><%= p.author %></strong></td>
-          <td>₹<%= p.price.toFixed(2) %></td>
-          <td><%= p.stock %></td>
-          <td class="text-center">
-            <a href="/admin/products/<%= p._id %>/edit" class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-pen"></i></a>
-            <form action="/admin/products/<%= p._id %>?_method=DELETE" method="POST" class="d-inline">
-              <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    <% } %>
-  </tbody>
+ <tbody id="productTableBody">
+</tbody>
+
 </table>
+<!--page sizing-->
+ <div>
+    <label for="pageSize" class="me-2">Rows per page:</label>
+    <select id="pageSize" class="form-select form-select-sm d-inline-block" style="width: auto;">
+      <option value="3">3</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+    </select>
+  </div>
+
+<!-- Pagination Controls -->
+      <nav>
+        <ul id="pagination" class="pagination"></ul>
+      </nav>
 </body>
 </html>

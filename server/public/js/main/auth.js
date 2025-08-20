@@ -209,6 +209,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-//1.UI for products/Add new Products-pagination
-//2. Add Product -backend create APIs : addProducta api,getAll products ,updateProduct, deleteproduct
-//3. image resize and image size limit for uploads
+
+//1. Add Product -sync the backend with UI : updateProduct, deleteproduct
+//2.category is not added to products(check)
+//3. product images path has to be checked.
+//4.implement offer managemnet UI ,then scema
+//5.implement bacend API for offer
+
+
+
+
+
+

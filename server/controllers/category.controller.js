@@ -7,7 +7,7 @@ const create = async (req, res) => {
   try {
     let imagePath = '';
     if (req.file) {
-      imagePath = `/uploads/categories/${req.file.filename}`; // relative path
+      imagePath = `/uploads/${req.file.filename}`; // relative path
     }
 
     const category = await Category.create({ name: req.body.name,showOnHomepage:req.body.showOnHomepage,image:imagePath});
@@ -43,7 +43,7 @@ const getAll = async (req, res) => {
   }
 };
 
-module.exports = { getAll };
+
 
 
 // 3. Get single category by ID (NEW)

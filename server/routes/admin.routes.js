@@ -4,4 +4,6 @@ const { getAllUsers } = require("../controllers/admin.controller");
 
 router.get("/admin-users", getAllUsers);
 
+
+
 module.exports = router;

@@ -9,7 +9,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script type="module" src="/js/main/adminaddproducts.js"></script>
+  <script>
+  window.productId = "<%= productId %>"; 
+</script>
+  <script type="module" src="/js/main/admineditproducts.js"></script>
 
 </head>
 
@@ -25,7 +28,7 @@
     <div class="col-md-10 content-area">
       <!-- Top bar -->
       <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-        <h2 class="fw-bold mb-0">Add new</h2>
+        <h2 class="fw-bold mb-0">Edit Product</h2>
         <div class="search-box">
           <input type="text" class="form-control" placeholder="Search">
         </div>
@@ -33,7 +36,7 @@
 
       <!-- Form section -->
       <div class="main-content py-4">
-        <form id="add-product-form" enctype="multipart/form-data">
+        <form id="edit-product-form" enctype="multipart/form-data">
           <div class="row g-5">
             <!-- Left side -->
             <div class="col-md-7">
@@ -63,14 +66,10 @@
                   <input type="text" class="form-control" placeholder="₹ 599" name="salePrice" id="salePrice">
                 </div>
               </div>
-              <!--add drop down for category-->
               <div class="mb-4">
-  <label class="form-label fw-bold">Category</label>
-  <select class="form-select" name="categoryId" id="categoryDropdown">
-    <option value="">Select a Category</option>
-  </select>
-</div>
-
+                <label class="form-label fw-bold">Category</label>
+                <input type="text" class="form-control" placeholder="Type Category here" name="category" id="category">
+              </div>
                <div class="mb-3">
     <label class="form-label fw-bold">Book Cover</label>
     <input type="file" name="image" id="bookCover" class="form-control" accept="image/*" >
@@ -78,9 +77,9 @@
 
               <div class="d-flex gap-3">
                 <button type="button" class="btn btn-outline-primary btn-lg">
-                  Add New Category <i class="bi bi-plus"></i>
+                  Cancel <i class="bi bi-plus"></i>
                 </button>
-                <button type="submit" class="btn btn-primary btn-lg">ADD PRODUCT</button>
+                <button type="submit" class="btn btn-primary btn-lg">Update</button>
               </div>
             </div>
 

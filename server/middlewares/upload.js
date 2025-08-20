@@ -1,9 +1,11 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const sharp = require('sharp');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/categories');
+    cb(null, 'public/uploads');
   },
   filename: function (req, file, cb) {
   cb(null, file.originalname);
@@ -15,8 +17,46 @@ const fileFilter = (req, file, cb) => {
   cb(null, allowedTypes.includes(file.mimetype));
 };
 
-const upload = multer({ storage, fileFilter });
-module.exports=upload;
+// Multer with 2MB limit
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 2 * 1024 * 1024 } // 2MB
+});
+
+
+// Middleware for resizing after upload
+const resizeImage = async (req, res, next) => {
+  if (!req.file) return next();
+
+  const outputDir = 'public/uploads/categories';
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  const resizedPath = path.join(outputDir, req.file.filename);
+
+  try {
+    await sharp(req.file.path)
+      .resize(800, 800, { fit: 'inside', withoutEnlargement: true }) // Max 800px
+      .toFormat('jpeg')
+      .jpeg({ quality: 80 })
+      .toFile(resizedPath+"-tmp");
+
+    // Delete original temp file
+    fs.unlinkSync(req.file.path);
+
+    // Update file path to the resized image
+    req.file.path = resizedPath;
+    req.file.destination = outputDir;
+    next();
+  } catch (err) {
+    console.error('Error resizing image:', err);
+    next(err);
+  }
+};
+
+module.exports = { upload, resizeImage };
 
 
 

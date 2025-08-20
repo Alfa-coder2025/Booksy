@@ -9,6 +9,7 @@ const connectLivereload = require("connect-livereload");
 const session = require("express-session");
 const defaultSession = require("./utils/session");
 const adminRoutes = require("./routes/admin.routes");
+const adminproductRoutes=require("./routes/product.routes");
 
 const app = express();
 
@@ -55,7 +56,8 @@ app.use("/api/category",require("./routes/category.routes"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/users",require("./routes/users.routes"));
 //app.use("/api/product",require)
-
+app.use("/api/admin/products",adminproductRoutes);
+app.use("/api/auth", authRoutes);
 
 
 //import admin.api/admin
@@ -134,7 +136,11 @@ app.get('/admin-products', (req, res) => {
 app.get('/admin-addproducts',(req,res)=>{
   res.render('addproducts',{currentPage:'addproducts'});
 })
-app.use("/api/auth", authRoutes);
+
+app.get('/admin-editproducts',(req,res)=>{
+  res.render('editproducts',{currentPage:'editproducts'});
+})
+
 
 //Notify browser on change
 liveReloadServer.server.once("connection", () => {
