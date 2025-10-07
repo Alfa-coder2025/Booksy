@@ -9,6 +9,7 @@ const create = async (req, res) => {
     if (req.file) {
       imagePath = `/uploads/${req.file.filename}`; // relative path
     }
+    //write fetch query to fetch the result based on req.body.name, if (array>0){return null}else{proceed}
 
     const category = await Category.create({ name: req.body.name,showOnHomepage:req.body.showOnHomepage,image:imagePath});
     res.json({ success: true, data:category });
@@ -108,7 +109,7 @@ const updateCategory = async (req, res) => {
     };
 
     if (req.file) {
-      updateData.image = `/uploads/categories/${req.file.filename}`;
+      updateData.image = `/uploads/${req.file.filename}`;
 
     }
 

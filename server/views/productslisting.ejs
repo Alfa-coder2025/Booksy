@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/app.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="/js/main/productlisting.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+
+<%- include('navbar') %>
+
+
+<!--breadcrumbs-->
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="/landingpage" id="homeBreadcrumb">Home</a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page" id="productsBreadcrumb">Products</li>
+</ol>
+ 
+   <!-- Sort Bar -->
+ 
+  <div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Sidebar Filters -->
+      <aside class="col-md-3 col-lg-2 mb-4">
+        <!-- <div class="border rounded p-3">
+          <h5 class="mb-3">Filters</h5>
+          <h6 class="fw-bold">By Category</h6>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="horror">
+            <label class="form-check-label" for="fiction">Horror</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="historical">
+            <label class="form-check-label" for="nonfiction">Historical</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="fantasy">
+            <label class="form-check-label" for="finance">Fantasy</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="personalwellbeing">
+            <label class="form-check-label" for="motivation">Personal Wellbeing</label>
+          </div>
+        </div> -->
+
+         <div class="border rounded p-3">
+  <h5 class="mb-3">Filters</h5>
+  <h6 class="fw-bold">By Category</h6>
+  <div id="categoryFilters">
+    <!-- Dynamic checkboxes will be added here -->
+  </div>
+</div>
+
+        
+         <div class="border rounded p-3" id="priceFilters">
+       
+          <h6 class="fw-bold">By Price</h6>
+          <div class="form-check">
+            <input class="form-check-input price-filter" type="checkbox" id="priceupto499">
+            <label class="form-check-label" for="priceupto499">Upto 499</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input price-filter" type="checkbox" id="price500to1000">
+            <label class="form-check-label" for="price500to1000">500 to 1000</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input price-filter" type="checkbox" id="price1000to2000">
+            <label class="form-check-label" for="price1001to2000">1001-2000</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input price-filter" type="checkbox" id="priceabove2000">
+            <label class="form-check-label" for="priceabove2000">above 2000</label>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Product Section -->
+   
+<main class="col-md-9 col-lg-10">
+
+  <!-- Product Cards -->
+  
+ <!-- <div class="container my-4">
+  <div class="row">
+    Product Card 1 -->
+    <!-- <div class="col-6 col-md-4 col-lg-3 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="/images/dracula.jpg" class="card-img-top" alt="Dracula">
+        <div class="card-body">
+          <h6 class="card-title">Dracula</h6>
+          <p class="card-text mb-1"><strong>₹450</strong> <del>₹650</del></p>
+          <p class="text-warning mb-0">★★★☆☆</p>
+        </div>
+      </div>
+    </div>
+
+   -->
+  <!-- </div> -->
+
+<div class="container mt-4">
+    <!-- Search + Sort Bar -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Search -->
+    <div class="input-group w-50">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search for books...">
+      <button class="btn btn-outline-secondary" type="button" id="searchBtn">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+
+     <!-- Sort -->
+    <div class="ms-3">
+      <select id="sortSelect" class="form-select">
+        <option value="">Sort By</option>
+        <option value="priceLowHigh">Price: Low to High</option>
+        <option value="priceHighLow">Price: High to Low</option>
+        <option value="alphabeticallyascending">aA-zZ</option>
+        <option value="alphabeticallydescending">zZ-aA</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row" id="productContainer">
+    <!-- Dynamic product cards will be injected here -->
+  </div>
+</div>
+
+
+</main>
+
+
+
+
+        <!-- Pagination -->
+<nav class="mt-4">
+  <ul class="pagination justify-content-center" id="pagination"></ul>
+</nav>
+
+      </main>
+    </div>
+    
+  </div>
+
+  <!-- Footer -->
+  
+  <!-- Newsletter + Footer (to be imported) -->
+   <%- include('footer') %>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

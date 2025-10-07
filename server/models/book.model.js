@@ -11,7 +11,7 @@ const authorSchema = new mongoose.Schema(
 const bookSchema = new mongoose.Schema(
   {
     bookName: { type: String, required: true },
-    author: { type: authorSchema },
+    author: { type: String },
     description: { type: String },
     regularPrice: { type: Number },
     publisher: { type: String },
@@ -19,7 +19,7 @@ const bookSchema = new mongoose.Schema(
     language: { type: String },
     coverType: { type: String },
     images: { type: [String], default: [] },
-    stockQuantity: { type: mongoose.Schema.Types.Int32 },
+    stockQuantity: { type: Number },
     rating: { type: Number, min: 0, max: 5 },
     showAsTopSelling: { type: Boolean, default: false },
     showAsLatest: { type: Boolean, default: false },

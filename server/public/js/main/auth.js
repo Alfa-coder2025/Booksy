@@ -79,6 +79,7 @@ catch(error){
 //verifyotp
 export const verifyotp = async (event) => {
   event.preventDefault();
+  stopOtpTimer(); 
   const otp = event.target.otp.value.trim();
   const tempUser = JSON.parse(sessionStorage.getItem('tempUser'));
 
@@ -111,6 +112,90 @@ export const verifyotp = async (event) => {
   } catch(error) {
     alert("An error occurred. Please try again");
   }
+};
+//verify forgot otp
+export const verifyForgotOtp = async (event) => {
+  event.preventDefault();
+  const otp = event.target.otp.value.trim();
+  const email = sessionStorage.getItem('forgotEmail');
+
+  if (!email) {
+    alert("Session expired. Please try again.");
+    window.location.href = "/forgotpassword";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:8000/api/auth/verify-forgot-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: email, otp }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      alert("OTP verified! Please reset your password.");
+      window.location.href = "/changepassword";
+    } else {
+      alert(result.message || "OTP verification failed");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred. Please try again");
+  }
+};
+
+//timer
+// otpTimer.js
+let countdown = 15;
+let timerInterval = null;
+
+export const startOtpTimer = () => {
+  const resendBtn = document.getElementById("resendBtn");
+  const timerText = document.getElementById("otpTimer");
+   const otpInput = document.querySelector("input[name='otp']");
+  const verifyBtn = document.querySelector("#verifyotpform button[type='submit']");
+
+
+  if (!resendBtn || !timerText || !otpInput || !verifyBtn) return;
+
+  resendBtn.disabled = true;
+ 
+  countdown = 15;
+  timerText.textContent = `0:${countdown < 10 ? '0' : ''}${countdown} seconds remaining`;
+
+  if (timerInterval) clearInterval(timerInterval);
+
+  timerInterval = setInterval(() => {
+    countdown--;
+    timerText.textContent = `0:${countdown < 10 ? '0' : ''}${countdown} seconds remaining`;
+
+    if (countdown <= 0) {
+      clearInterval(timerInterval);
+      resendBtn.disabled = false;
+      otpInput.disabled = false;
+      verifyBtn.disabled = false;
+      timerText.textContent = "You can resend the OTP now";
+    }
+  }, 1000);
+};
+// Stop the timer immediately (call this on Verify click)
+export const stopOtpTimer = () => {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    const timerText = document.getElementById("otpTimer");
+    const resendBtn = document.getElementById("resendBtn");
+    if (timerText) timerText.textContent = "";
+    if (resendBtn) resendBtn.disabled = false;
+  }
+};
+
+// Optional: reset timer manually (if needed elsewhere)
+export const resetOtpTimer = () => {
+  clearInterval(timerInterval);
+  startOtpTimer();
 };
 
 
@@ -149,48 +234,84 @@ export const login = async (event) => {
   }
 };
 
+export const resendOtp=async()=>{
+  const tempUser=JSON.parse(sessionStorage.getItem("tempUser"));
+  if(!tempUser){
+    alert("Session expired :Please try again");
+    window.location.href="/signup";
+  }
+  try{
+    const response=await fetch("http://localhost:8000/api/auth/resend-otp",{
+      method:"POST",
+      headers:{"Content-type":"application/json"},
+      body:JSON.stringify({identifier:tempUser.email}),
+    });
+    const result=await response.json();
+    if(response.ok&&result.success){
+      alert("OTP sent successfully to your email");
+    }
+    else{
+      alert(result.message||"Failed to send otp");
+    }
+     
+    
+  }
+  catch(error){
+    alert("An error occcured.Please try again");
+  }
+}
 
-/*export const login = async (event) => {
+
+//forgotpassword
+
+export const forgotpassword=async(event)=>{
   event.preventDefault();
   const email = event.target.email.value.trim();
-  const password = event.target.password.value.trim();
-
-  try {
-    // Check if user exists
-    const user = await User.findOne({ email });
-    if (!user) {
-      alert("User not found. Please sign up first.");
-      return;
-    }
-   // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      alert("Invalid credentials");
-      return;
-    }
-
-    // Login successful
-    // Store user data in session/local storage as needed
-    sessionStorage.setItem('user', JSON.stringify({
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      role: 'user'
-    }));
-
-    window.location.href = "/dashboard";
-  } catch (error) {
-    alert("An error occurred. Please try again");
+if (!email) {
+    alert("Please enter your email");
+    return;
   }
-};*/
-//admin login
+  try{
+    const response=await fetch("http://localhost:8000/api/auth/check-email",{
+    method:"POST",
+    headers:{"Content-type":"application/json"},
+    body:JSON.stringify({email}),
+    });
 
+    const result=await response.json();
+    if (!result.exists) {
+      alert("No account found with this email");
+      return;
+    }
+    const otpResponse=await fetch("http://localhost:8000/api/auth/send-otp",{
+      method:"POST",
+    headers:{"Content-type":"application/json"},
+    body:JSON.stringify({identifier:email}),
+    })
+
+    const otpResult=await otpResponse.json();
+     if (otpResult.success) {
+      sessionStorage.setItem("forgotEmail", email);
+      alert("OTP sent to your email!");
+      window.location.href = "/enterotp"; 
+    } else {
+      alert(otpResult.message || "Failed to send OTP");
+    }
+
+  }
+  catch(error){
+    alert("An error occcured.Please try again");
+  }
+
+}
 
 //logout
 export const logout = () => {
   sessionStorage.clear();
   window.location.href = "/login";
 };
+
+//forgotpassword
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -207,13 +328,81 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   if (loginForm) loginForm.addEventListener("submit", login);
 
+  const resendBtn=document.getElementById("resendBtn");
+  
+  if (resendBtn) {
+    resendBtn.addEventListener("click", async () => {
+      await resendOtp();    
+      startOtpTimer();      // restart the timer
+    });
+  }
+
+  const forgotPasswordForm=document.getElementById("forgotPasswordForm");
+  if(forgotPasswordForm) forgotPasswordForm.addEventListener("submit",forgotpassword);
+
+  startOtpTimer();
+
 });
 
 
-//1. Add Product -sync the backend with UI : updateProduct, deleteproduct
-//2.category is not added to products(check)
-//3. product images path has to be checked.
-//4.implement offer managemnet UI ,then scema
+
+// // change password
+// export const changePassword = async (event) => {
+//   event.preventDefault();
+//   const newPassword = event.target.password.value.trim();
+//   const confirmPassword = event.target.confirmpassword.value.trim();
+//   const email = sessionStorage.getItem("forgotEmail");
+
+//   if (!email) {
+//     alert("Session expired. Please try again.");
+//     window.location.href = "/forgotpassword";
+//     return;
+//   }
+
+//   if (newPassword.length < 4) {
+//     alert("Password must be at least 4 characters");
+//     return;
+//   }
+
+//   if (newPassword !== confirmPassword) {
+//     alert("Passwords must match");
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch("http://localhost:8000/api/auth/change-password", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ email, newPassword })
+//     });
+
+//     const result = await response.json();
+
+//     if (response.ok && result.success) {
+//       alert("Password changed successfully! Please login.");
+//       sessionStorage.removeItem("forgotEmail");
+//       window.location.href = "/login";
+//     } else {
+//       alert(result.message || "Failed to change password");
+//     }
+//   } catch (error) {
+//     alert("An error occurred. Please try again");
+//   }
+// };
+
+
+
+//1.implement stock
+//2.check resend not working..why?
+//3. display link and login page(forgot password? login)=> connect to forgot password page
+//3.1 understand the sessonStorage flow in the signup
+//3.2 how expressSession is used
+//4. when clicked on verify, it should trigger sendotp=> go to verifyotp page,
+//5. if verify otp returns true,it should navigate to changepassword UI
+//6.WHEN CLICKED ON CONFIRM PASSWORD,trigger api
+
+
+//4.implement offer managemnet UI ,then scHema
 //5.implement bacend API for offer
 
 

@@ -16,7 +16,7 @@ const {upload,resizeImage}=require("../middlewares/upload");
 const{addProduct,getAllProducts,updateProduct,deleteProduct}=require("../controllers/product.controller");
 
 router.get('/getAll',getAllProducts);
-router.post('/update/:id',updateProduct);
+router.put('/update/:id', upload.single('image'), resizeImage, updateProduct);
 router.delete('/delete/:id',deleteProduct);
 router.post('/add', upload.single('image'),resizeImage, addProduct);
 console.log("Upload type:", typeof upload);
@@ -30,6 +30,7 @@ router.get('/editproducts/:id', (req, res) => {
     productId: req.params.id
   });
 });
+
 
 
 module.exports=router;

@@ -6,11 +6,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Users</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
   <link rel="stylesheet" href="/css/admin.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script src="/js/main/pagination.js"></script>
-  <script src="/js/main/adminproducts.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  
 </head>
 
 <body>
@@ -30,19 +31,17 @@
     <span>Filter By</span>
   </div>
   <div>
-    <select class="form-select">
-      <option selected>14 Feb 2019</option>
-      <option>Latest</option>
-      <option>Oldest</option>
+    <select class="form-select" id="sortDropdown">
+      <option value="all" selected>Sort</option>
+      <option value="latest">Latest</option>
+      <option value="oldest">Oldest</option>
     </select>
   </div>
   <div>
-    <select class="form-select">
-      <option selected>Category</option>
-      <option>Fiction</option>
-      <option>Financial</option>
-      <option>Self Help</option>
-    </select>
+    <select class="form-select" id="categoryDropdown">
+      <option  value="all" selected>Category</option>
+      <!-- categories will be filled dynamically by JS -->
+      </select>
   </div>
   <div class="ms-auto">
     <a href="/admin-addproducts" class="btn btn-primary">
@@ -51,9 +50,10 @@
   </div>
 </div>
 
+<!--search bar-->
 
-          <div class="input-group mb-3">
-  <input type="text" id="productSearch" class="form-control" placeholder="Search Books by name">
+          <div class="input-group mb-3 mt-3">
+  <input type="text" id="productSearch" class="form-control" placeholder="Search Books by name  or category">
   <button class="btn btn-outline-secondary" type="button" id="clearProductSearch">Clear</button>
 </div>
 
@@ -62,11 +62,13 @@
   <thead class="table-light">
     <tr>
       <th>Image</th>
-      <th>Product Name</th>
+     <th class="sortable-product" data-sort="bookName">Product Name</th>
       <th>Category</th>
       <th>Author</th>
       <th>Price</th>
       <th>Stock</th>
+      <th>Top Selling</th>
+      <th>Latest</th>
       <th class="text-center">Action</th>
     </tr>
   </thead>
@@ -74,6 +76,22 @@
 </tbody>
 
 </table>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Book Image</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="previewImage" src="" alt="Book Image" class="img-fluid rounded">
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--page sizing-->
  <div>
     <label for="pageSize" class="me-2">Rows per page:</label>
@@ -88,5 +106,118 @@
       <nav>
         <ul id="pagination" class="pagination"></ul>
       </nav>
+
+      <!--edit modal-->
+
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="editProductModalLabel">Edit Product</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Edit form -->
+      <form id="edit-product-form" enctype="multipart/form-data">
+        <input type="hidden" name="productId" id="editProductId">
+
+        <div class="modal-body">
+          <div class="row g-5">
+            <!-- Left side -->
+            <div class="col-md-7">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Product Name</label>
+                <input type="text" class="form-control" name="bookName" id="editBookName">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Author</label>
+                <input type="text" id="editAuthor" name="author" class="form-control" placeholder="Enter author">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea class="form-control" rows="4" name="description" id="editDescription"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Offer</label>
+                <input type="text" class="form-control" name="offer" id="editOffer">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Stock Quantity</label>
+                <input type="number" class="form-control" name="stockQuantity" id="editStockQuantity">
+              </div>
+
+              <div class="row mb-3">
+                <div class="col">
+                  <label class="form-label fw-bold">Regular Price</label>
+                  <input type="text" class="form-control" name="regularPrice" id="editRegularPrice">
+                </div>
+                <div class="col">
+                  <label class="form-label fw-bold">Sale Price</label>
+                  <input type="text" class="form-control" name="salePrice" id="editSalePrice">
+                </div>
+              </div>
+
+
+              <!-- Toggles -->
+             <div class="row mb-3">
+  <div class="col">
+    <label for="showAsTopSelling" class="form-label fw-bold">Show as Top Selling</label>
+    <div class="form-check form-switch">
+     
+   
+      <input class="form-check-input" type="checkbox" id="showAsTopSelling" name="showAsTopSelling" value="true">
+      <label class="form-check-label" for="showAsTopSelling"></label>
+    </div>
+  </div>
+
+  <div class="col">
+    <label for="showAsLatest" class="form-label fw-bold">Show as Latest</label>
+    <div class="form-check form-switch">
+   
+      <input class="form-check-input" type="checkbox" id="showAsLatest" name="showAsLatest" value="true">
+      <label class="form-check-label" for="showAsLatest"></label>
+    </div>
+  </div>
+</div>
+
+
+              <!-- Category dropdown -->
+              <div class="mb-4">
+                <label class="form-label fw-bold">Category</label>
+                <select class="form-select" name="categoryId" id="editCategoryDropdown">
+                  <option value="">Select a Category</option>
+                </select>
+              </div>
+
+              <!-- File upload with preview -->
+              <div class="mb-3">
+                <label class="form-label fw-bold">Book Cover</label><br>
+                <img id="editBookCoverPreview" src="/images/no-image.png" alt="Book Cover Preview" 
+                     style="max-width: 120px; margin-bottom: 10px; display:block;">
+                <input type="file" name="images" id="editBookCover" class="form-control" accept="image/*">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer inside form -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/js/main/pagination.js"></script>
+<script src="/js/main/adminproducts.js"></script>
+
 </body>
 </html>

@@ -39,14 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(formData);
 
     // //Append all form fields
-    console.log(document.getElementById("bookName").value.trim())
+    console.log(document.getElementById("categoryDropdown").value.trim())
     formData.append("bookName", document.getElementById("bookName").value.trim());
+    formData.append("author",document.getElementById("author").value.trim());
     formData.append("description", document.getElementById("description").value.trim());
     formData.append("offer", document.getElementById("offer").value.trim());
     formData.append("stockQuantity", document.getElementById("stockQuantity").value.trim());
     formData.append("regularPrice", document.getElementById("regularPrice").value.trim());
     formData.append("salePrice", document.getElementById("salePrice").value.trim());
-    formData.append("category", document.getElementById("categoryDropdown").value);
+    formData.append("categoryId", document.getElementById("categoryDropdown").value);
+    formData.append("showAsTopSelling", document.querySelector("input[name='showAsTopSelling']").checked ? "true" : "false");
+    console.log(document.querySelector("input[name='showAsTopSelling']").checked);
+  formData.append("showAsLatest", document.querySelector("input[name='showAsLatest']").checked ? "true" : "false");
+  console.log(document.querySelector("input[name='showAsLatest']").checked);
+
+
 
 
     const file = document.getElementById("bookCover").files[0];
@@ -80,30 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-// async function addProduct(e) {
-//   console.log("result");
-//   e.preventDefault();
-
-//   const formData = new FormData(e.target);
-//   try {
-//     const res = await fetch("/api/admin/products/add", {
-//       method: "POST",
-//       body: formData
-//     });
-//     const data = await res.json();
-
-//     if (data.success) {
-//       alert("Product added successfully!");
-//       e.target.reset();
-//     } else {
-//       alert(`Error: ${data.message || "Failed to add product"}`);
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     alert("Something went wrong!");
-//   }
-// }
-
-// document.getElementById("add-product-form")
-//   ?.addEventListener("submit", addProduct);
+document.getElementById("close-btn").addEventListener("click",()=>{
+  window.location.href="/admin-products";
+})

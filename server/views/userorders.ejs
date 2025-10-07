@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders - Book Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/app.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <%- include('navbar') %>
+
+  <!-- Breadcrumb -->
+  <div class="container mt-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/landingpage">Home</a></li>
+        <li class="breadcrumb-item"><a href="/useraccount">Account</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Orders Page -->
+  <div class="container my-4">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+          <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="useraccount.ejs">Manage My Account</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">My Profile</a></li>
+            <li class="nav-item "><a class="nav-link" href="#">Address Book</a></li>
+            <li class="nav-item"><a class="nav-link active fw-bold" href="#">My Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">My Wishlist</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Wallet</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Coupons</a></li>
+          </ul>
+          <hr>
+          <h6>Filters</h6>
+          <p class="fw-bold small mb-1">Order Status</p>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="delivered">
+            <label class="form-check-label small" for="delivered">Delivered</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="canceled">
+            <label class="form-check-label small" for="canceled">Canceled</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="returned">
+            <label class="form-check-label small" for="returned">Returned</label>
+          </div>
+          <p class="fw-bold small mt-3 mb-1">Order Time</p>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="last30">
+            <label class="form-check-label small" for="last30">Last 30 days</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="y2025">
+            <label class="form-check-label small" for="y2025">2025</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="y2024">
+            <label class="form-check-label small" for="y2024">2024</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Content -->
+      <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5>Welcome! Customer Name</h5>
+        </div>
+
+        
+       <!-- Order Card -->
+      <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <p class="small mb-1">Order Placed<br><strong>1 July 2025</strong></p>
+                <p class="small mb-1">Total<br><strong>₹359.00</strong></p>
+                <p class="small">Ship To<br><strong>Customer Name</strong></p>
+              </div>
+              <div class="col-md-9">
+                <div class="d-flex justify-content-between">
+                  <a href="#" class="small text-decoration-none">View Order Details</a>
+                  <span class="small">Order # 407-3653833-259190</span>
+                </div>
+                <hr>
+                <div class="d-flex">
+                  <img src="https://via.placeholder.com/80" class="me-3 border" alt="Book">
+                  <div>
+                    <h6 class="mb-1">The Alchemist</h6>
+                    <p class="small mb-1">Price: ₹359.00</p>
+                    <p class="small text-muted">Return eligible through 30-Jul-2025</p>
+                  </div>
+                  <div class="ms-auto text-end">
+                    <p class="small mb-1">Status: <span class="fw-bold text-warning">PROCESSING</span></p>
+                    <button class="btn btn-outline-secondary btn-sm">Cancel Order</button>
+                    <button class="btn btn-outline-primary btn-sm">Invoice</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Another Order -->
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <p class="small mb-1">Order Placed<br><strong>1 February 2025</strong></p>
+                <p class="small mb-1">Total<br><strong>₹1250.00</strong></p>
+                <p class="small">Ship To<br><strong>Customer Name</strong></p>
+              </div>
+              <div class="col-md-9">
+                <div class="d-flex justify-content-between">
+                  <a href="#" class="small text-decoration-none">View Order Details</a>
+                  <span class="small">Order # 407-3653833-219931</span>
+                </div>
+                <hr>
+                <div class="d-flex">
+                  <img src="https://via.placeholder.com/80" class="me-3 border" alt="Book">
+                  <div>
+                    <h6 class="mb-1">Harry Potter and the Order of Phoenix</h6>
+                    <p class="small mb-1">Price: ₹1250.00</p>
+                    <p class="small text-muted">Return eligible through 01-Mar-2025</p>
+                  </div>
+                  <div class="ms-auto text-end">
+                    <p class="small mb-1">Status: <span class="fw-bold text-success">DELIVERED</span></p>
+                    <button class="btn btn-outline-secondary btn-sm">Return</button>
+                    <button class="btn btn-outline-primary btn-sm">Invoice</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Third Order -->
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <p class="small mb-1">Order Placed<br><strong>29 January 2024</strong></p>
+                <p class="small mb-1">Total<br><strong>₹889.00</strong></p>
+                <p class="small">Ship To<br><strong>Customer Name</strong></p>
+              </div>
+              <div class="col-md-9">
+                <div class="d-flex justify-content-between">
+                  <a href="#" class="small text-decoration-none">View Order Details</a>
+                  <span class="small">Order # 407-3653833-216831</span>
+                </div>
+                <hr>
+                <div class="d-flex">
+                  <img src="https://via.placeholder.com/80" class="me-3 border" alt="Book">
+                  <div>
+                    <h6 class="mb-1">Atomic Habits</h6>
+                    <p class="small mb-1">Price: ₹889.00</p>
+                    <p class="small text-muted">Return eligible through 28-Feb-2025</p>
+                  </div>
+                  <div class="ms-auto text-end">
+                    <p class="small mb-1">Status: <span class="fw-bold text-success">DELIVERED</span></p>
+                    <button class="btn btn-outline-secondary btn-sm">Return</button>
+                    <button class="btn btn-outline-primary btn-sm">Invoice</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /Orders Content -->
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <%- include('footer') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

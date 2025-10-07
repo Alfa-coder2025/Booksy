@@ -26,32 +26,69 @@ const upload = multer({
 
 
 // Middleware for resizing after upload
+// const resizeImage = async (req, res, next) => {
+//   if (!req.file) return next();
+
+//   const outputDir = 'public/uploads';
+//   if (!fs.existsSync(outputDir)) {
+//     fs.mkdirSync(outputDir, { recursive: true });
+//   }
+
+//   const resizedPath = path.join(outputDir, req.file.filename);
+
+//   try {
+//     await sharp(req.file.path)
+//       .resize(800, 800, { fit: 'inside', withoutEnlargement: true }) // Max 800px
+//       .toFormat('jpeg')
+//       .jpeg({ quality: 80 })
+//       .toFile(resizedPath+"-tmp");
+
+//     // Delete original temp file
+//     fs.unlinkSync(req.file.path);
+
+//     // Update file path to the resized image
+//     req.file.path = resizedPath;
+//     req.file.destination = outputDir;
+//     next();
+//   } catch (err) {
+//     console.error('Error resizing image:', err);
+//     next(err);
+//   }
+// };
+
 const resizeImage = async (req, res, next) => {
   if (!req.file) return next();
 
-  const outputDir = 'public/uploads/categories';
+  const outputDir = "public/uploads";
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  const resizedPath = path.join(outputDir, req.file.filename);
+  const { name, ext } = path.parse(req.file.filename);
+  const finalPath = path.join(outputDir, req.file.filename);     // horror.jpeg
+  const tempPath = path.join(outputDir, `${name}-tmp${ext}`);    // horror-tmp.jpeg
 
   try {
+    // Save resized image to temp file
     await sharp(req.file.path)
-      .resize(800, 800, { fit: 'inside', withoutEnlargement: true }) // Max 800px
-      .toFormat('jpeg')
+      .resize(800, 800, { fit: "inside", withoutEnlargement: true }) // Max 800px
+      .toFormat("jpeg")
       .jpeg({ quality: 80 })
-      .toFile(resizedPath+"-tmp");
+      .toFile(tempPath);
 
-    // Delete original temp file
+    // Delete original uploaded file
     fs.unlinkSync(req.file.path);
 
-    // Update file path to the resized image
-    req.file.path = resizedPath;
+    // Rename temp file back to original name
+    fs.renameSync(tempPath, finalPath);
+
+    // Update req.file info
+    req.file.path = finalPath;
     req.file.destination = outputDir;
+
     next();
   } catch (err) {
-    console.error('Error resizing image:', err);
+    console.error("Error resizing image:", err);
     next(err);
   }
 };

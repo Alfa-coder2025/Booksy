@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Fetch existing product data
-    const res = await fetch(`/admin/products/get/${productId}`);
+    const res = await fetch(`/api/admin/products/get/${productId}`);
     const product = await res.json();
 
     // Populate form fields
@@ -17,6 +17,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("regularPrice").value = product.regularPrice || "";
     document.getElementById("salePrice").value = product.salePrice || "";
     document.getElementById("category").value = product.categoryId?.name || "";
+    document.getElementById("editAuthor").value=product.author||"";
+
+    document.getElementById("showAsTopSelling").checked = !!product.showAsTopSelling;
+    document.getElementById("showAsLatest").checked = !!product.showAsLatest;
+
+    const preview = document.getElementById("bookCoverPreview");
+    if (preview) {
+      preview.src = product.image
+        ? `/uploads/${product.image}`
+        : "/images/no-image.png";
+    }
 
   } catch (err) {
     console.error("Error loading product:", err);
@@ -29,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const formData = new FormData(e.target);
 
     try {
-      const res = await fetch(`/admin/products/update/${productId}`, {
+      const res = await fetch(`/api/admin/products/update/${productId}`, {
         method: "PUT",
         body: formData
       });

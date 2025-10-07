@@ -10,6 +10,11 @@ const session = require("express-session");
 const defaultSession = require("./utils/session");
 const adminRoutes = require("./routes/admin.routes");
 const adminproductRoutes=require("./routes/product.routes");
+const landingPageRoutes=require("./routes/landingpage.routes");
+const productlistingRoutes=require("./routes/productlisting.routes");
+const productsviewRoutes=require("./routes/productsview.routes");
+const useraccountRoutes=require("./routes/user.routes");
+const addressBookRoutes=require("./routes/addressbook.routes");
 
 const app = express();
 
@@ -58,6 +63,11 @@ app.use("/api/users",require("./routes/users.routes"));
 //app.use("/api/product",require)
 app.use("/api/admin/products",adminproductRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/user/landingPage",landingPageRoutes);
+app.use("/api/user/productslisting",productlistingRoutes);
+app.use("/api/user/productsview",productsviewRoutes);
+app.use("/api/user/useraccount",useraccountRoutes);
+app.use("/api/user/addressBook",addressBookRoutes);
 
 
 //import admin.api/admin
@@ -140,6 +150,38 @@ app.get('/admin-addproducts',(req,res)=>{
 app.get('/admin-editproducts',(req,res)=>{
   res.render('editproducts',{currentPage:'editproducts'});
 })
+app.get('/admin-offermanagement',(req,res)=>{
+  res.render('offermanagement',{currentPage:'offermanagement'});
+})
+app.get('/user-productslisting',(req,res)=>{
+  res.render('productslisting',{currentPage:'productslisting'});
+})
+app.get('/user-productsview',(req,res)=>{
+  res.render('productsview',{currentPage:'productsview'});
+})
+app.get('/contactpage',(req,res)=>{
+  res.render('contactpage',{currentPage:'contactpage'});
+})
+app.get('/about',(req,res)=>{
+  res.render('about',{currentPage:'about'});
+})
+app.get('/useraccount',(req,res)=>{
+  res.render('useraccount',{currentPage:'useraccount'});
+})
+app.get('/userorders',(req,res)=>{
+  res.render('userorders',{currentPage:'userorders'});
+})
+app.get('/changepassword',(req,res)=>{
+  res.render('changepassword',{currentPage:'changepassword'});
+})
+app.get('/addressbook',(req,res)=>{
+  res.render('addressbook',{currentPage:'addressbook'});
+})
+
+
+
+
+
 
 
 //Notify browser on change

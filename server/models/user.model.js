@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema(
   {
+    profilePic: { type: String, default: "" }, 
     firstName: { type: String },
     lastName: { type: String },
     email: { type: String },
