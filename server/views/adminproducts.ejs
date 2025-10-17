@@ -25,57 +25,72 @@
       <div class="col-md-10 content-area">
         <h3>Products</h3>
 <!-- Filter -->
-<div class="filter-box d-flex align-items-center gap-3 flex-wrap bg-white p-3 rounded shadow-sm" id="filter-products">
-  <div class="d-flex align-items-center gap-2">
-    <button class="btn btn-light border"><i class="fas fa-filter"></i></button>
-    <span>Filter By</span>
-  </div>
-  <div>
-    <select class="form-select" id="sortDropdown">
-      <option value="all" selected>Sort</option>
-      <option value="latest">Latest</option>
-      <option value="oldest">Oldest</option>
+<!-- Filter Section -->
+<div class="filter-box shadow-sm bg-white rounded p-3 mb-3 d-flex flex-wrap align-items-center justify-content-between">
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-2 mb-md-0">
+    <div class="d-flex align-items-center me-3">
+      <i class="bi bi-funnel-fill fs-5 me-2"></i>
+      <span class="fw-semibold">Filter By</span>
+    </div>
+
+    <select id="sortDropdown" class="form-select form-select-sm">
+      <option value="all">Sort</option>
+      <option value="createdAt">Latest</option>
+      <option value="createdAt">Oldest</option>
+    </select>
+
+    <select id="categoryDropdown" class="form-select form-select-sm">
+      <option value="all">Category</option>
+    </select>
+
+    <select id="authorDropdown" class="form-select form-select-sm">
+      <option value="all">Author</option>
     </select>
   </div>
-  <div>
-    <select class="form-select" id="categoryDropdown">
-      <option  value="all" selected>Category</option>
-      <!-- categories will be filled dynamically by JS -->
-      </select>
-  </div>
-  <div class="ms-auto">
-    <a href="/admin-addproducts" class="btn btn-primary">
-      <i class="fas fa-plus me-2"></i> Add New Product
-    </a>
-  </div>
+
+  <a href="/admin-addproducts" class="btn btn-primary btn-sm px-3">
+    + Add New Product
+  </a>
+
+ 
+
 </div>
 
 <!--search bar-->
 
-          <div class="input-group mb-3 mt-3">
-  <input type="text" id="productSearch" class="form-control" placeholder="Search Books by name  or category">
+<div class="d-flex mb-3 mt-3">
+  <input type="text" id="productSearch" class="form-control" placeholder="Search Books by name or category">
   <button class="btn btn-outline-secondary" type="button" id="clearProductSearch">Clear</button>
 </div>
 
-<!-- Products Table -->
-<table class="table table-hover mt-4 align-middle bg-white rounded shadow-sm overflow-hidden" id="products-table-body">
-  <thead class="table-light">
-    <tr>
-      <th>Image</th>
-     <th class="sortable-product" data-sort="bookName">Product Name</th>
-      <th>Category</th>
-      <th>Author</th>
-      <th>Price</th>
-      <th>Stock</th>
-      <th>Top Selling</th>
-      <th>Latest</th>
-      <th class="text-center">Action</th>
-    </tr>
-  </thead>
- <tbody id="productTableBody">
-</tbody>
 
-</table>
+
+<!-- Products Table -->
+<div class="table-responsive mt-4 shadow-sm rounded bg-white">
+  <table class="table table-hover align-middle mb-0" id="products-table-body">
+    <thead class="table-light">
+      <tr>
+        <th>Image</th>
+        <th class="sortable-product" data-sort="bookName">Product Name</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>ISBN</th>
+        <th>Publisher</th>
+        <th>Published Date</th>
+        <th>Total Pages</th>
+        <th>Cover Type</th>
+        <th>Language</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Top Selling</th>
+        <th>Latest</th>
+        <th class="text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody id="productTableBody"></tbody>
+  </table>
+</div>
+
 
 <!-- Image Preview Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
@@ -130,10 +145,45 @@
                 <input type="text" class="form-control" name="bookName" id="editBookName">
               </div>
 
-              <div class="mb-3">
+               <!-- Author dropdown -->
+              <div class="mb-4">
                 <label class="form-label fw-bold">Author</label>
-                <input type="text" id="editAuthor" name="author" class="form-control" placeholder="Enter author">
+                <select class="form-select" name="authorId" id="editAuthorDropdown">
+                  <option value="">Select an Author</option>
+                </select>
               </div>
+              <!-- Add these inside the left side col-md-7 of your modal body -->
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">ISBN</label>
+                <input type="text" class="form-control" name="ISBN" id="editISBN">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Publisher</label>
+                <input type="text" class="form-control" name="publisher" id="editPublisher">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Published Date</label>
+                <input type="date" class="form-control" name="publishedDate" id="editPublishedDate">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Total Pages</label>
+                <input type="number" class="form-control" name="totalPage" id="editTotalPage">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Cover Type</label>
+                <input type="text" class="form-control" name="coverType" id="editCoverType">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Language</label>
+                <input type="text" class="form-control" name="language" id="editLanguage">
+              </div>
+
 
               <div class="mb-3">
                 <label class="form-label fw-bold">Description</label>
@@ -192,6 +242,8 @@
                   <option value="">Select a Category</option>
                 </select>
               </div>
+
+
 
               <!-- File upload with preview -->
               <div class="mb-3">

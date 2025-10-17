@@ -31,11 +31,10 @@ const create = async (req, res) => {
 // 2. Get all categories with sorting
 const getAll = async (req, res) => {
   try {
-    // Take sorting values from the query string (optional)
+    
     const sortBy = req.query.sortBy || "name"; // default: sort by name
     const order = req.query.order === "desc" ? -1 : 1; // default: ascending
 
-    // Find and sort
     const categories = await Category.find().sort({ [sortBy]: order });
 
     res.json({ success: true, data: categories });
@@ -47,7 +46,7 @@ const getAll = async (req, res) => {
 
 
 
-// 3. Get single category by ID (NEW)
+// 3. Get single category by ID 
 const getById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);

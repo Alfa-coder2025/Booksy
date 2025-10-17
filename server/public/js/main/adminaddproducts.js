@@ -22,12 +22,41 @@ async function showAllCategories() {
     alert("Could not load categories");
   }
 }
+async function showAllAuthors() {
+  try {
+    const response = await fetch(`/api/admin/author/getAll?sortBy=${sortBy}&order=${sortOrder}`);
+    if (!response.ok) throw new Error("Failed to load authors");
+
+    const result = await response.json();
+    
+    const authors = result.data || [];
+  
+
+
+    const dropdown = document.getElementById("authorDropdown");
+    dropdown.innerHTML = '<option value="">Select an Author</option>'; // reset options
+
+    authors.forEach(author => {
+      const option = document.createElement("option");
+      option.value = author._id;          // authorId
+      option.textContent = author.name;  // author Name
+      dropdown.appendChild(option);
+    });
+
+
+  } catch (error) {
+    console.error("Error loading authors:", error);
+    alert("Could not load authors");
+  }
+}
+
 
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
   showAllCategories();
+  showAllAuthors();
   const form = document.getElementById("add-product-form");
 
   form.addEventListener("submit", async (e) => {
@@ -41,7 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // //Append all form fields
     console.log(document.getElementById("categoryDropdown").value.trim())
     formData.append("bookName", document.getElementById("bookName").value.trim());
-    formData.append("author",document.getElementById("author").value.trim());
+    formData.append("ISBN", document.getElementById("ISBN").value.trim());
+    formData.append("authorId", document.getElementById("authorDropdown").value);
     formData.append("description", document.getElementById("description").value.trim());
     formData.append("offer", document.getElementById("offer").value.trim());
     formData.append("stockQuantity", document.getElementById("stockQuantity").value.trim());
@@ -52,6 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(document.querySelector("input[name='showAsTopSelling']").checked);
   formData.append("showAsLatest", document.querySelector("input[name='showAsLatest']").checked ? "true" : "false");
   console.log(document.querySelector("input[name='showAsLatest']").checked);
+  formData.append("publisher", document.getElementById("publisher").value.trim());
+formData.append("publishedDate", document.getElementById("publishedDate").value.trim());
+formData.append("totalPage", document.getElementById("totalPage").value.trim());
+formData.append("coverType", document.getElementById("coverType").value.trim());
+formData.append("language", document.getElementById("language").value.trim());
+
 
 
 

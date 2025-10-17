@@ -3,7 +3,6 @@ const router=express.Router();
 
 const {getAllProductListingContents,getproductafterFilterandSort}=require("../controllers/productlisting.controller");
 
-
 const {upload,resizeImage}=require("../middlewares/upload");
 
 router.get("/getAllProductListingContents",getAllProductListingContents);

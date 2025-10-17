@@ -7,6 +7,7 @@ let rowsPerPage = parseInt(localStorage.getItem("rowsPerPageProducts")) || 5;
 let sortBy = "bookName"; 
 let sortOrder = "desc"; 
 let filterBy = "all"; 
+let filterAuthor = "all";
 async function showAllProducts() {
   try {
     console.log("test");
@@ -15,8 +16,8 @@ async function showAllProducts() {
     if (!res.ok) throw new Error("Failed to fetch products");
 
     const result = await res.json();
-    console.log(result,"result");
-    products = result || [];
+    console.log("Products API result:", result);
+    products = result.data || [];
 
     renderProductPage(1); 
   } catch (err) {
@@ -31,11 +32,14 @@ function getFilteredProducts() {
   return products.filter(product => {
     const matchesCategory =
       filterBy === "all" || product.categoryId?._id === filterBy;
+
+      const matchesAuthor = filterAuthor === "all" || product.authorId?._id === filterAuthor;
     const matchesSearch =
       product.bookName?.toLowerCase().includes(searchTerm) ||
-      product.categoryId?.name?.toLowerCase().includes(searchTerm);
+      product.categoryId?.name?.toLowerCase().includes(searchTerm)||
+      product.authorId?.name?.toLowerCase().includes(searchTerm);
 
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch && matchesAuthor;
   });
 }
 
@@ -65,7 +69,7 @@ function displayProductTable(data, tableBody, rowsPerPage, page) {
   let paginatedItems = data.slice(start, end);
 
   if (paginatedItems.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="6" class="text-center">No products available.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="15" class="text-center">No products available.</td></tr>`;
     return;
   }
 
@@ -87,7 +91,13 @@ function displayProductTable(data, tableBody, rowsPerPage, page) {
 
               <td>${p.bookName || ''}</td>
               <td>${p.categoryId?.name || ''}</td>
-              <td>${p.author || ''}</td>
+             <td>${p.authorId?.name || ''}</td>
+              <td>${p.ISBN || "—"}</td>
+              <td>${p.publisher || "—"}</td>
+              <td>${p.publishedDate ? new Date(p.publishedDate).toLocaleDateString() : "—"}</td>
+              <td>${p.totalPage || "—"}</td>
+              <td>${p.coverType || "—"}</td>
+              <td>${p.language || "—"}</td>
               <td>₹${p.salePrice ? p.salePrice.toFixed(2) : '0.00'}</td>
               <td>${p.stockQuantity || 0}</td>
                <td>${p.showAsTopSelling ? "✅" : "❌"}</td>
@@ -110,22 +120,32 @@ function displayProductTable(data, tableBody, rowsPerPage, page) {
 
 async function openEditModal(product) {
   await loadCategories();
+  await loadAuthors(); 
   document.getElementById("editProductId").value = product._id;
 
   document.getElementById("editBookName").value = product.bookName || "";
   document.getElementById("editDescription").value = product.description;
   document.getElementById("editOffer").value = product.offer;
-  document.getElementById("editAuthor").value = product.author || "";
+  document.getElementById("editAuthorDropdown").value = product.authorId?._id || "";
   document.getElementById("editSalePrice").value = product.salePrice || "";
   document.getElementById("editStockQuantity").value = product.stockQuantity || "";
   document.getElementById("editRegularPrice").value = product.regularPrice;
   document.getElementById("showAsTopSelling").checked = !!product.showAsTopSelling;
   document.getElementById("showAsLatest").checked = !!product.showAsLatest;
+  document.getElementById("editPublisher").value = product.publisher || "";
+  document.getElementById("editLanguage").value = product.language || "";
+  document.getElementById("editCoverType").value = product.coverType || "";
+  document.getElementById("editPublishedDate").value = product.publishedDate
+    ? new Date(product.publishedDate).toISOString().split("T")[0]
+    : "";
+  document.getElementById("editISBN").value = product.ISBN || "";
+  document.getElementById("editTotalPage").value = product.totalPage || "";
+
   console.log(product);
 
   //document.getElementById("editCategoryDropdown").value = product.categoryId;
 
-  
+   document.getElementById("editAuthorDropdown").value = product.authorId?._id || "";
   // If you have category dropdown
   if (document.getElementById("editCategoryDropdown")) {
     document.getElementById("editCategoryDropdown").value = product.categoryId?._id || "";
@@ -143,12 +163,12 @@ async function openEditModal(product) {
 
 async function loadCategories() {
   try {
-    const res = await fetch("/api/category/getAll"); // adjust your route
+    const res = await fetch("/api/category/getAll"); 
     const data = await res.json();
     console.log("Categories API response:", data);
 
     const dropdown = document.getElementById("editCategoryDropdown");
-    dropdown.innerHTML = ""; // clear old options
+    dropdown.innerHTML = ""; // to clear old options
     const categories = data.categories || data.data || []; 
 
 
@@ -162,6 +182,27 @@ async function loadCategories() {
     console.error("Error loading categories:", err);
   }
 }
+
+async function loadAuthors() {
+  try {
+    const res = await fetch("/api/admin/author/getAll");
+    const data = await res.json();
+
+    const dropdown = document.getElementById("editAuthorDropdown");
+    dropdown.innerHTML = '<option value="">Select an Author</option>';
+
+    const authors = data.data || [];
+    authors.forEach(author => {
+      const option = document.createElement("option");
+      option.value = author._id;
+      option.textContent = author.name;
+      dropdown.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Error loading authors:", err);
+  }
+}
+
 
 async function loadCategoryFilterDropdown() {
   try {
@@ -181,13 +222,32 @@ async function loadCategoryFilterDropdown() {
     console.error("Error loading categories:", err);
   }
 }
+async function loadAuthorFilterDropdown() {
+  try {
+    const res = await fetch("/api/admin/author/getAll");
+    const data = await res.json();
+    const dropdown = document.getElementById("authorDropdown");
+    dropdown.innerHTML = '<option value="all" selected>Author</option>';
+
+    const authors = data.author || data.data || [];
+     authors.sort((a, b) => a.name.localeCompare(b.name));
+    authors.forEach(auth => {
+      const opt = document.createElement("option");
+      opt.value = auth._id;
+      opt.textContent = auth.name;
+      dropdown.appendChild(opt);
+    });
+  } catch (err) {
+    console.error("Error loading categories:", err);
+  }
+}
 
 async function updateProduct(productId) {
-  const form = document.getElementById("editProductForm");
+  const form = document.getElementById("edit-product-form");
   const formData = new FormData(form);
   formData.set("showAsTopSelling", document.getElementById("showAsTopSelling").checked ? "true" : "false");
 formData.set("showAsLatest", document.getElementById("showAsLatest").checked ? "true" : "false");
- 
+ formData.set("totalPage", document.getElementById("editTotalPage").value);
 
   try {
     const res = await fetch(`/api/admin/products/update/${productId}`, {
@@ -200,6 +260,7 @@ formData.set("showAsLatest", document.getElementById("showAsLatest").checked ? "
 
     if (result.success) {
       alert("Product updated successfully");
+        bootstrap.Modal.getInstance(document.getElementById("editProductModal")).hide();
       showAllProducts();
       document.getElementById("editProductModal").style.display = "none";
     } else {
@@ -257,6 +318,7 @@ document.getElementById("productTableBody").addEventListener("click", async func
 document.addEventListener("DOMContentLoaded", () => {
     showAllProducts();
      loadCategoryFilterDropdown(); 
+        loadAuthorFilterDropdown(); 
     
   // Search
   const productSearch = document.getElementById("productSearch");
@@ -324,6 +386,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
     renderProductPage(1);
   });
+
+   // --- Author filter ---
+  
+    const authorDropdown = document.getElementById("authorDropdown");
+    authorDropdown?.addEventListener("change", (e) => {
+      filterAuthor = e.target.value;
+      renderProductPage(1);
+    });
 
 
   // Rows per page

@@ -13,4 +13,23 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers };
+const adminLogout=async(req,res)=>{
+  try {
+   
+      req.session.destroy(err=>{
+        if(err){
+          console.log("Error destroying ssion",err);
+           res.status(500).json({ message: "Something went wrong!" });
+        }
+            res.clearCookie("connect.sid");
+        res.redirect("/login");
+      })
+      
+    }
+  catch (error) {
+    console.log("Unexpected error",error);
+  }
+}
+
+
+module.exports = { getAllUsers,adminLogout };

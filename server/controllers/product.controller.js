@@ -3,7 +3,7 @@ const Book = require("../models/book.model"); // path to your Book schema
 // Add Product
 exports.addProduct = async (req, res) => {
   try {
-    console.log(req.file.filename);
+    if (req.file) console.log("Uploaded file:", req.file.filename);
      let productImage = '';
      let imagesArr=[];
     if (req.file) {
@@ -14,20 +14,42 @@ exports.addProduct = async (req, res) => {
     const showAsTopSelling = req.body.showAsTopSelling === "true";
 const showAsLatest = req.body.showAsLatest === "true" ;
 
-
     const productData = {
-      ...req.body,
-      images: imagesArr,
+      bookName: req.body.bookName,
+      ISBN: req.body.ISBN,                  
+      authorId: req.body.authorId,          
+      description: req.body.description,
+      regularPrice: req.body.regularPrice,
+      salePrice: req.body.salePrice,
+      stockQuantity: req.body.stockQuantity,
+      offer: req.body.offer,
+      categoryId: req.body.categoryId,
+      publisher: req.body.publisher,
+      publishedDate: req.body.publishedDate,
+      totalPage: req.body.totalPage,
+      coverType: req.body.coverType,
+      language: req.body.language,
       showAsTopSelling,
-      showAsLatest
+      showAsLatest,
+      images: imagesArr
     };
+
+    // const productData = {
+    //   ...req.body,
+    //   images: imagesArr,
+    //   showAsTopSelling,
+    //   showAsLatest
+    // };
+
+    
     
     const product = new Book(productData); // take data from request body
     console.log(product,"text-adding-product");
     const savedProduct = await product.save();
     
+
     //IMAGE URL TO BE SAVED
-    res.status(200).json({message:"added product successfully",success:true});
+    res.status(200).json({message:"added product successfully",success:true,product: savedProduct});
   } catch (error) {
     res.status(500).json({ message: "Error adding product", error });
   }
@@ -39,9 +61,18 @@ exports.getAllProducts = async (req, res) => {
     const sortBy = req.query.sortBy || "createdAt";
     const order = req.query.order === "asc" ? 1 : -1; // asc = 1, desc = -1
 
-    const products = await Book.find().populate("categoryId").sort({ [sortBy]: order });
+    const products = await Book.find()
+    .populate("categoryId","name")
+    .populate("authorId","name description image")
+    .sort({ [sortBy]: order });
+ 
+    res.status(200).json({
+  success: true,
+  data: products
+});
+
   
-    res.json(products);
+    // res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error });
   }
@@ -63,15 +94,22 @@ const showAsLatest = req.body.showAsLatest === "true";
 
       const updateData = {
       bookName: req.body.bookName,
-      author: req.body.author,
+       ISBN: req.body.ISBN, 
+      authorId: req.body.authorId,
       description: req.body.description,
       regularPrice: req.body.regularPrice,
       salePrice: req.body.salePrice,
       stockQuantity: req.body.stockQuantity,
       offer: req.body.offer,
       categoryId: req.body.categoryId,
+      publisher:req.body.publisher,
+      publishedDate:req.body.publishedDate,
+      coverType: req.body.coverType,
+      totalPage: req.body.totalPage, 
+      language: req.body.language,
       showAsTopSelling,
       showAsLatest,
+      
     };
 
 

@@ -267,3 +267,19 @@ footer a:hover {
   color: #0d6efd; /* Bootstrap primary blue */
   transform: scale(1.2);
 }
+/* Sidebar profile image */
+#sidebarProfileImage {
+  width: 100px;         /* fixed width */
+  height: 100px;        /* fixed height */
+  object-fit: cover;    /* crop to fit */
+  border-radius: 50%;   /* make it circular */
+  border: 2px solid #ddd; /* optional border */
+}
+
+/* Modal profile image */
+#profileImage {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+}

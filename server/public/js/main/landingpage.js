@@ -1,7 +1,32 @@
-document.addEventListener("DOMContentLoaded",()=> {
+document.addEventListener("DOMContentLoaded",async()=> {
   showAllContents();
+  const profileBtn = document.getElementById("profileBtn");
 
-})
+  if (profileBtn) {
+    // Navigate to user account on click
+    profileBtn.addEventListener("click", () => {
+      window.location.href = "/useraccount"; // route to useraccount.ejs
+    });
+
+    // Load user profile pic
+    try {
+      const res = await fetch("/api/user/useraccount/mydetails", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        profileBtn.src = result.data.profilePic || "https://cdn-icons-png.flaticon.com/512/6325/6325109.png";
+      }
+    } catch (err) {
+      console.error("Failed to fetch user profile", err);
+    }
+  }
+});
+
+
 
 async function showAllContents() {
    const categoryLandingPage=document.getElementById("categoriesLandingPage"); 

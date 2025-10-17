@@ -12,13 +12,14 @@ const {
 
 const sendOtpController = async (req, res) => {
   try {
-    const { identifier } = req.body;
-    const response = await sendOtp(identifier);
-   req.session.sessionData.defaultSession = {
-      ...req.session.sessionData.defaultSession,
-      signupData: req.body.user,
-    };
-    res.json(response);
+    const { identifier,user } = req.body;
+
+   const response = await sendOtp(identifier);
+  
+  if (user) {
+      req.session.signupData = user;
+    }
+    res.json({ success: true, message: "OTP sent successfully" });
    
   } catch (err) {
     res.status(500).send({ success: false, message: err.message });
@@ -30,8 +31,8 @@ const sendOtpController = async (req, res) => {
 const verifyOtpController = async (req, res) => {
   try {
     const { identifier, otp } = req.body;
-    const user = req.session.sessionData.defaultSession.signupData;
-
+    const user = req.session.signupData;
+    if (!user) return res.json({ success: false, message: "User data missing in session" });
     const response = await verifyOtp(identifier, otp, user);
 
     return res.json(response);
@@ -45,8 +46,12 @@ const verifyOtpController = async (req, res) => {
 const resendOtpController = async (req, res) => {
   try {
     const { identifier } = req.body;
-    const response = await resendOtp(identifier);
-    res.json(response);
+    
+    const response = await resendOtp(identifier); 
+
+    console.log(`Resent OTP for ${identifier}`);
+
+    return res.json(response);
   } catch (err) {
     res.status(500).send({ success: false, message: err.message });
   }
@@ -55,19 +60,34 @@ const resendOtpController = async (req, res) => {
 //login Controller
 
 const { loginUser } = require("../service/auth/auth.service");
-const { exists } = require("../models/otp.model");
+// const { exists } = require("../models/otp.model");
 
 const loginController = async (req, res) => {
   try {
+     
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
+    console.log("Login request body:", req.body);
+
     const result = await loginUser(email, password);
+      console.log("Login result:", result);
 
     if (!result.success) {
       return res.status(401).json(result);
     }
 
+    req.session.user={
+      id:result.user.id||result.user._id,
+      email:result.user.email,
+      role:result.user.role,
+    }
+   console.log("✅ Session set after login:", req.session.user);
     res.json(result);
   } catch (err) {
+      console.error("Login error:", err);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
@@ -99,11 +119,19 @@ const checkEmailController=async(req,res)=>{
 const verifyForgotPasswordOtpController=async(req,res)=>{
   try{
    const{identifier,otp}=req.body;
+   if (!identifier || !otp) {
+      return res.json({ success: false, message: "Identifier and OTP are required" });
+    }
+    
    const user=await User.findOne({email:identifier});
    if(!user){
     return res.json({success:false,message:"User with this email doesnt exist"});
    }
    const response=await verifyOtp(identifier,otp,user);
+   if(response.success){
+    req.session.email=identifier;
+    return res.json({success:true,redirect:"/changepassword"});
+   }
    return res.json(response);
   }
   catch(error){
@@ -112,21 +140,52 @@ const verifyForgotPasswordOtpController=async(req,res)=>{
 }
 
 
-//chanhe-password
+//change-password
 
 const resetPasswordController=async(req,res)=>{
   try{
+    const {email,newPassword}=req.body;
+    // const email=req.session.email;
+    
+    if(!email){
+      return res.status(400).json({ success: false, message: "Session expired. Please verify OTP again." });
+    }
 
-    const{email,newPassword}=req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    const user=await User.findOne({email});
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
+    req.session.email = null;//clearing from session
+
     res.json({ success: true, message: "Password reset successfully" });
+    
   }
+
   catch(error){
     res.status(500).json({success:false,message:"Server error",error:error.message});
   }
+}
+
+//logout controller
+
+const logoutController=async(req,res)=>{
+  
+  req.session.destroy((err)=>{
+    if(err){
+      {
+      console.error("Session destroy error:", err);
+      return res.status(500).send("Logout failed");
+    }
+    }
+    res.clearCookie("connect.sid",{path:"/",httpOnly: true,
+      secure: false,});
+    res.redirect("/login?loggedOut=true");
+  })
+    
+ 
+ 
 }
 
 module.exports = {
@@ -136,5 +195,6 @@ module.exports = {
   loginController,
   checkEmailController,
   verifyForgotPasswordOtpController,
-  resetPasswordController
+  resetPasswordController,
+  logoutController
 };

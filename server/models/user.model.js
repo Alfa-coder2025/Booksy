@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: Number,
       unique: true,
+      sparse:true,
+      default:null,
+    },
+     altPhone: {    
+      type: Number,
+      default: null,
     },
     email: {
       type: String,
@@ -34,12 +40,19 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       minlength: 4,
+      required:false,
     },
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
     },
+    googleId:{
+      type:String,
+      unique:true,
+      sparse: true, 
+    },
+    profilePic: { type: String, default: "" },
     address: {
       type: [addressSchema],
       default: [],

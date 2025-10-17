@@ -1,41 +1,4 @@
-/*
-const { findOtpByIdentifier, createOtp } = require("../../repo/otp/otp.repo");
-const { sendOtpMail } = require("./auth.helper");
-const { generateOtp, getOtpExpireAtAndDeleteAt } = require("../../utils/utils");
 
-const sendOtp = async (identifier) => {
-  let otpRecord = await findOtpByIdentifier(identifier);
-  const now = new Date();
-  const { expiresAt, deleteAt } = getOtpExpireAtAndDeleteAt();
-  const generatedOtp = generateOtp(); // e.g., 4-digit number
-
-  if (otpRecord) {
-    const isExpired = otpRecord.expiresAt <= now;
-
-    if (otpRecord.isUsed || isExpired) {
-      // Update existing OTP record
-      otpRecord.otp = generatedOtp;
-      otpRecord.isUsed = false;
-      otpRecord.expiresAt = expiresAt;
-      otpRecord.deleteAt = deleteAt;
-      await otpRecord.save();
-    }
-  } else {
-    // No existing OTP: create a new one
-    otpRecord = {
-      identifier,
-      otp: generatedOtp,
-      isUsed: false,
-      expiresAt,
-      deleteAt: deleteAt,
-    };
-    await createOtp(otpRecord);
-  }
-
-  // Send OTP via email
-  await sendOtpMail(identifier, otpRecord.otp);
-};
-*/
 
 //another sendOtp
 
@@ -67,8 +30,8 @@ async function sendOtp(identifier) {
   }
 
   const otp = generateOtp();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); //5 minutes later
-  const deleteAt = new Date(Date.now() + 10 * 60 * 1000); //10 minutes later
+  const expiresAt = new Date(Date.now() + 1 * 60 * 1000); //5 minutes later
+  // const deleteAt = new Date(Date.now() + 10 * 60 * 1000); //10 minutes later
   
   await OTP.findOneAndUpdate(
     { identifier },
@@ -77,7 +40,6 @@ async function sendOtp(identifier) {
       otp,
       createdAt: new Date(),
       expiresAt,
-      deleteAt,
       isUsed: false,
       attempts: 0,
     },
@@ -101,17 +63,31 @@ async function deliverOtpEmail(identifier, otp) {
     from: "'Booksy auth' <noreply@booksy.com>",
     to: identifier,
     subject: "Your OTP code",
-    text: `Your OTP is ${otp}.It expires in 5 minutes`,
+    text: `Your OTP is ${otp}.It expires in 1 minute`,
   });
 }
 
 //resend Otp
 async function resendOtp(identifier) {
-  await OTP.updateMany(
-    { identifier, isUsed: false },
-    { $set: { expiresAt: new Date(0) } }
-  );
-  return sendOtp(identifier);
+  const record = await OTP.findOne({ identifier, isUsed: false });
+
+  if (!record) throw new Error("No OTP found to resend");
+
+  const otp = generateOtp();
+  record.otp = otp; 
+  record.expiresAt = new Date(Date.now() + 1 * 60 * 1000);
+  record.attempts = 0;
+  await record.save();
+  // await OTP.updateMany(
+  //   { identifier, isUsed: false },
+  //   { $set: { expiresAt: new Date(0) } }
+  // );
+   await deliverOtpEmail(identifier, otp);
+
+  // return sendOtp(identifier);
+  console.log(`Resent OTP for ${identifier}: ${otp}`);
+
+  return { success: true, message: "OTP resent" };
 }
 
 //verify otp
@@ -184,7 +160,20 @@ const loginUser = async (email, inputPassword) => {
     return { success: false, message: "User not found" };
   }
 
-  const isMatch = user.role==="admin"?true:await bcrypt.compare(inputPassword, user.password);
+  // const isMatch = user.role==="admin"?true:await bcrypt.compare(inputPassword, user.password);
+
+  let isMatch = false;
+  if (user.role === "admin") {
+    isMatch = true;
+  } else {
+    if (!user.password) {
+      console.log(" User password missing for non-admin user");
+      return { success: false, message: "User password missing" };
+    }
+    isMatch = await bcrypt.compare(inputPassword, user.password);
+  }
+
+  console.log("Password match:", isMatch);
   if (!isMatch) {
     return { success: false, message: "Invalid credentials" };
   }

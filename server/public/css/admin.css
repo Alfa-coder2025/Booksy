@@ -278,3 +278,90 @@ body {
     border-bottom: 1px solid #eee;
   }
 }
+/* ===== Product Table ===== */
+.table-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 1200px; /* ensures consistent column widths */
+}
+
+th, td {
+  vertical-align: middle;
+  white-space: nowrap; /* keeps cells in one line */
+}
+
+td {
+  text-align: center;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* For mobile views */
+@media (max-width: 992px) {
+  .filter-box,
+  .input-group {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .filter-box select,
+  .filter-box a {
+    width: 100%;
+  }
+
+  table {
+    min-width: unset;
+  }
+}
+
+/* ===== Filter Section Styling ===== */
+.filter-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.filter-box select {
+  min-width: 140px;
+}
+
+.filter-box i {
+  color: #555;
+}
+
+/* Mobile adjustments */
+@media (max-width: 992px) {
+  .filter-box {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .filter-box .d-flex.flex-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-box select {
+    width: 100%;
+  }
+
+  .filter-box a {
+    width: 100%;
+    text-align: center;
+  }
+}

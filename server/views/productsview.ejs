@@ -27,101 +27,109 @@
   </li>
 </ol>
 
-
+<!-- 
+  Book Details Section -->
   <!-- Book Details Section -->
-  <div class="container my-5">
-    <div class="row">
-      <!-- Left Column: Book Images -->
-      <div class="col-md-5">
-        <!-- Book Cover Image (Dynamic) -->
-        <div class="mb-3">
-          <img id="bookMainImage" src="" class="img-fluid rounded shadow-sm" alt="Book Cover">
-        </div>
-         <div>
-          <img id="bookImage" src="" class="img-fluid rounded shadow-sm" alt="bookImage">
-        </div>
-        <!-- Author Image (Dynamic) -->
-        <div>
-          <img id="authorImage" src="" class="img-fluid rounded shadow-sm" alt="Author Image">
-        </div>
-        
+<div class="container my-5">
+  <div class="row">
+    <!-- Left Column: Book Images -->
+    <div class="col-md-5">
+      <!-- Book Cover Image (Dynamic) -->
+      <div class="mb-3">
+        <img id="bookMainImage" src="" class="img-fluid rounded shadow-sm" alt="Book Cover">
       </div>
-
-      <!-- Right Column: Book Info -->
-      <div class="col-md-7">
-        <!-- Book Title (Dynamic) -->
-        <h3 id="bookTitle"></h3>
-
-        <!-- Author Name (Dynamic) -->
-        <p class="text-muted" id="bookAuthor"></p>
-
-        <!-- Rating + Review Count (Dynamic) -->
-        <p><span class="text-warning" id="bookRating"></span></p>
-
-        <!-- Pages / Language / Published Date (Dynamic) -->
-        <p id="bookMeta"></p>
-
-        <!-- ISBN (Dynamic) -->
-        <p id="bookISBN"></p>
-
-        <!-- Price (Dynamic) -->
-        <h4 class="text-primary">
-          <span id="bookPrice"></span>
-          <small class="text-muted text-decoration-line-through" id="bookOldPrice"></small>
-        </h4>
-
-          <!-- Stock Dynamic -->
-
-        <p id="stockQuantity"></p>
-
-       <!-- short description
-        <p id="bookDescription"></p> -->
-
-
-
-        <!-- Quantity + Add to Cart -->
-        <div class="d-flex align-items-center mb-3">
-          <div class="input-group me-3" style="width:120px;">
-            <button class="btn btn-outline-secondary" id="qtyMinus">-</button>
-            <input type="text" class="form-control text-center" id="qtyInput" value="1">
-            <button class="btn btn-outline-secondary" id="qtyPlus">+</button>
-          </div>
-          <button class="btn btn-primary me-2" id="addToCartBtn">Add to Cart</button>
-          <button class="btn btn-warning" id="buyNowBtn">Buy Now</button>
-        </div>
-
-        <!-- Delivery & Return Info -->
-        <ul class="list-unstyled">
-          <li><i class="bi bi-truck"></i> <span id="deliveryInfo">Free Delivery</span></li>
-          <li><i class="bi bi-arrow-repeat"></i> <span id="returnInfo">Free 30-Day Return Policy</span></li>
-        </ul>
+      <!-- Additional Book Images -->
+      <div id="additionalBookImages" class="d-flex gap-2">
+        <!-- dynamically added thumbnails -->
+      </div>
+      <!-- Author Image (Dynamic) -->
+      <div class="mt-3">
+        <img id="authorImage" src="" class="img-fluid rounded shadow-sm" alt="Author Image">
       </div>
     </div>
 
-    <!-- Tabs for Description / Reviews -->
-    <ul class="nav nav-tabs mt-5" id="bookTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button" role="tab">Description</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
-      </li>
-    </ul>
-    <div class="tab-content border p-4" id="bookTabContent">
+    <!-- Right Column: Book Info -->
+    <div class="col-md-7">
+      <!-- Book Title (Dynamic) -->
+      <h3 id="bookTitle"></h3>
 
-        <h5 class="mt-4">Short Summary</h5>
-        <p id="bookSummary">
-          <!--dynamically added-->
-        </p>
-      </div>
-      <div class="tab-pane fade" id="reviews" role="tabpanel">
-        <div id="reviewsList">
-          <p>⭐️⭐️⭐️⭐️⭐️ - "A timeless classic!"</p>
-          <p>⭐️⭐️⭐️⭐️ - "Chilling and atmospheric."</p>
-          <p>⭐️⭐️⭐️ - "A bit slow but worth the read."</p>
+      <!-- Author Name (Dynamic) -->
+      <p class="text-muted" id="bookAuthor"></p>
+
+      <!-- Category -->
+      <p><strong>Category:</strong> <span id="bookCategory"></span></p>
+
+      <!-- Rating + Review Count (Dynamic) -->
+      <p><span class="text-warning" id="bookRating"></span></p>
+
+      <!-- Pages / Language / Published Date (Dynamic) -->
+      <p id="bookMeta"></p>
+      <!-- <p><strong>Pages:</strong> <span id="bookPages"></span></p>
+      <p><strong>Language:</strong> <span id="bookLanguage"></span></p>
+      <p><strong>Cover Type:</strong> <span id="bookCoverType"></span></p>
+      <p><strong>Publisher:</strong> <span id="bookPublisher"></span></p>
+      <p><strong>Published Date:</strong> <span id="bookPublishedDate"></span></p> -->
+
+      <!-- ISBN (Dynamic) -->
+      <p id="bookISBN"></p>
+
+<!--    
+      <p><strong>Offer:</strong> <span id="bookOffer"></span></p> -->
+
+      <!-- Price (Dynamic) -->
+      <h4 class="text-primary">
+        <span id="bookPrice"></span>
+        <small class="text-muted text-decoration-line-through" id="bookOldPrice"></small>
+      </h4>
+
+      <!-- Stock Dynamic -->
+      <p><strong>Stock:</strong> <span id="stockQuantity"></span></p>
+
+      <!-- Short Description -->
+      <p id="bookDescription"></p>
+
+      <!-- Quantity + Add to Cart -->
+      <div class="d-flex align-items-center mb-3">
+        <div class="input-group me-3" style="width:120px;">
+          <button class="btn btn-outline-secondary" id="qtyMinus">-</button>
+          <input type="text" class="form-control text-center" id="qtyInput" value="1">
+          <button class="btn btn-outline-secondary" id="qtyPlus">+</button>
         </div>
+        <button class="btn btn-primary me-2" id="addToCartBtn">Add to Cart</button>
+        <button class="btn btn-warning" id="buyNowBtn">Buy Now</button>
+      </div>
+
+      <!-- Delivery & Return Info -->
+      <ul class="list-unstyled">
+        <li><i class="bi bi-truck"></i> <span id="deliveryInfo">Free Delivery</span></li>
+        <li><i class="bi bi-arrow-repeat"></i> <span id="returnInfo">Free 30-Day Return Policy</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tabs for Description / Reviews -->
+  <ul class="nav nav-tabs mt-5" id="bookTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button" role="tab">Description</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+    </li>
+  </ul>
+  <div class="tab-content border p-4" id="bookTabContent">
+    <div class="tab-pane fade show active" id="desc" role="tabpanel">
+      <h5 class="mt-4">Short Summary</h5>
+      <p id="bookSummary"><!-- dynamically added --></p>
+    </div>
+    <div class="tab-pane fade" id="reviews" role="tabpanel">
+      <div id="reviewsList">
+        <p>⭐️⭐️⭐️⭐️⭐️ - "A timeless classic!"</p>
+        <p>⭐️⭐️⭐️⭐️ - "Chilling and atmospheric."</p>
+        <p>⭐️⭐️⭐️ - "A bit slow but worth the read."</p>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- Related Items -->
     <!-- <h4 class="mt-5">Related Items</h4>

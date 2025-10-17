@@ -5,7 +5,7 @@
 export const signup = async (event) => {
   event.preventDefault();
 
-
+sessionStorage.removeItem("forgotEmail");
 
 const username=event.target.username.value.trim();
 const phone=event.target.phone.value.trim();
@@ -50,6 +50,7 @@ try{
 
   const response=await fetch("http://localhost:8000/api/auth/send-otp",{
   method:"POST",
+  credentials: "include",
   headers:{
     "Content-Type":"application/json",
   },
@@ -65,6 +66,7 @@ const result=await response.json();
         email,
         password,
       }));
+    // sessionStorage.setItem('tempUser', JSON.stringify(user));
     window.location.href = "/enterotp"; 
   }
   else{
@@ -82,29 +84,34 @@ export const verifyotp = async (event) => {
   stopOtpTimer(); 
   const otp = event.target.otp.value.trim();
   const tempUser = JSON.parse(sessionStorage.getItem('tempUser'));
+  // // const email = document.querySelector("#email").value;
 
   if (!tempUser) {
     alert("Session expired. Please sign up again.");
     window.location.href = "/signup";
     return;
   }
+   console.log(`Verifying OTP: ${otp} for ${tempUser.email}`);
 
   try {
     const response = await fetch("http://localhost:8000/api/auth/verify-otp", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        identifier: tempUser.email,
-        otp
+         identifier: tempUser.email,
+        otp: otp,
+        user: tempUser 
       }),
     });
 
     const result = await response.json();
-    if(response.ok) {
+    if(result.success) {
       // OTP verified, creating user in database
       alert("Account created successfully!,Click on the login");
+      window.location.href = "/login";
   
     } else {
       alert(result.message || "OTP verification failed");
@@ -148,7 +155,7 @@ export const verifyForgotOtp = async (event) => {
 
 //timer
 // otpTimer.js
-let countdown = 15;
+let countdown = 60;
 let timerInterval = null;
 
 export const startOtpTimer = () => {
@@ -162,7 +169,7 @@ export const startOtpTimer = () => {
 
   resendBtn.disabled = true;
  
-  countdown = 15;
+  countdown = 60;
   timerText.textContent = `0:${countdown < 10 ? '0' : ''}${countdown} seconds remaining`;
 
   if (timerInterval) clearInterval(timerInterval);
@@ -211,14 +218,15 @@ export const login = async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
+      credentials: "include"
     });
 
     const result = await response.json();
     
     if (response.ok) {
-      // Save token & role
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
+      // // Save token & role
+      // localStorage.setItem("token", result.token);
+      // localStorage.setItem("user", JSON.stringify(result.user));
 
       // Redirect based on role
       if (result.user.role === "admin") {
@@ -311,7 +319,7 @@ export const logout = () => {
   window.location.href = "/login";
 };
 
-//forgotpassword
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -321,8 +329,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const verifyOtpForm = document.getElementById("verifyotpform");
   if (verifyOtpForm) {
+    if (sessionStorage.getItem("forgotEmail")) {
+    // User came from forgot-password flow
+    verifyOtpForm.addEventListener("submit", verifyForgotOtp);
+  } else {
+    // User came from signup flow
     verifyOtpForm.addEventListener("submit", verifyotp);
-
+     console.log("Signup OTP flow active");
+  }
+  
+    
   }
 
   const loginForm = document.getElementById("loginForm");
@@ -342,53 +358,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startOtpTimer();
 
+  const form = document.getElementById("changePasswordForm");
+  if (form) {
+    form.addEventListener("submit", changePassword);
+  }
+
 });
 
 
 
-// // change password
-// export const changePassword = async (event) => {
-//   event.preventDefault();
-//   const newPassword = event.target.password.value.trim();
-//   const confirmPassword = event.target.confirmpassword.value.trim();
-//   const email = sessionStorage.getItem("forgotEmail");
+// change password
+export const changePassword = async (event) => {
+  event.preventDefault();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+  const email = sessionStorage.getItem("forgotEmail");
 
-//   if (!email) {
-//     alert("Session expired. Please try again.");
-//     window.location.href = "/forgotpassword";
-//     return;
-//   }
+  if (!email) {
+    alert("Session expired. Please try again.");
+    window.location.href = "/forgotpassword";
+    return;
+  }
 
-//   if (newPassword.length < 4) {
-//     alert("Password must be at least 4 characters");
-//     return;
-//   }
+  if (newPassword.length < 4) {
+    alert("Password must be at least 4 characters");
+    return;
+  }
 
-//   if (newPassword !== confirmPassword) {
-//     alert("Passwords must match");
-//     return;
-//   }
+  if (newPassword !== confirmPassword) {
+    alert("Passwords must match");
+    return;
+  }
 
-//   try {
-//     const response = await fetch("http://localhost:8000/api/auth/change-password", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ email, newPassword })
-//     });
+  try {
+    const response = await fetch("http://localhost:8000/api/auth/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, newPassword })
+    });
 
-//     const result = await response.json();
+    const result = await response.json();
 
-//     if (response.ok && result.success) {
-//       alert("Password changed successfully! Please login.");
-//       sessionStorage.removeItem("forgotEmail");
-//       window.location.href = "/login";
-//     } else {
-//       alert(result.message || "Failed to change password");
-//     }
-//   } catch (error) {
-//     alert("An error occurred. Please try again");
-//   }
-// };
+    if (response.ok && result.success) {
+      alert("Password changed successfully! Please login.");
+      sessionStorage.removeItem("forgotEmail");
+      window.location.href = "/login";
+    } else {
+      alert(result.message || "Failed to change password");
+    }
+  } catch (error) {
+    alert("An error occurred. Please try again");
+  }
+};
+
+// document.getElementById("changePasswordForm").addEventListener("submit", changePassword);
+
 
 
 

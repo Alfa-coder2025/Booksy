@@ -7,7 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="/css/app.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-  <script src="/js/main/useraccount.js"></script>
+  <script src="/js/main/useraccount.js?v=1.0.1"></script>
 </head>
 <body>
   <!-- Navbar -->
@@ -101,45 +101,57 @@
           
           <!-- Left: Profile Image -->
           <div class="col-md-4 text-center">
-            <img id="profileImage" src="https://via.placeholder.com/150" alt="Profile"
+            <img id="profileImage" src="" alt="Profile"
                  class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
             
             <!-- Upload New Image -->
-            <form>
+            <form id="profilePicForm" enctype="multipart/form-data">
               <div class="mb-3">
                 <label for="profilePicUpload" class="form-label small">Upload New Profile Picture</label>
                 <input class="form-control" type="file" id="profilePicUpload" name="profilePic" accept="image/*">
               </div>
-              <button class="btn btn-sm btn-primary">Save Picture</button>
+              <button type="submit" class="btn btn-sm btn-primary">Save Picture</button>
             </form>
           </div>
 
           <!-- Right: User Details -->
-          <div class="col-md-8">
-            <h6 class="fw-bold">Personal Information</h6>
-            
-            <p>
-              <strong>Name:</strong> <span id="userName"></span>
-              <i class="bi bi-pencil-square edit-icon ms-2" title="Edit Name"></i>
-            </p>
-            <p>
-              <strong>Contact Number:</strong> <span id="userPhone"></span>
-              <i class="bi bi-pencil-square edit-icon ms-2" title="Edit Contact Number"></i>
-            </p>
-            <p>
-              <strong>Alternate Number:</strong> <span id="userAltPhone"></span>
-              <i class="bi bi-pencil-square edit-icon ms-2" title="Edit Alternate Number"></i>
-            </p>
-            <p>
-              <strong>Email:</strong> <span id="userEmail"></span>
-              <i class="bi bi-pencil-square edit-icon ms-2" title="Edit Email"></i>
-            </p>
+          <!-- Right: User Details -->
+<div class="col-md-8">
+  <h6 class="fw-bold">Personal Information</h6>
 
-            <hr>
-            <h6 class="fw-bold">Address</h6>
-            <p id="userAddress"></p>
-            <i class="bi bi-pencil-square edit-icon ms-2" title="Edit Address"></i>
-          </div>
+  <form id="profileForm">
+    <div class="mb-2">
+      <label class="fw-bold">Name:</label>
+      <input type="text" class="form-control form-control-sm" id="editUserName" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label class="fw-bold">Contact Number:</label>
+      <input type="text" class="form-control form-control-sm" id="editUserPhone" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label class="fw-bold">Alternate Number:</label>
+      <input type="text" class="form-control form-control-sm" id="editUserAltPhone" disabled />
+    </div>
+
+    <div class="mb-2">
+      <label class="fw-bold">Email:</label>
+      <input type="email" class="form-control form-control-sm" id="editUserEmail" disabled />
+    </div>
+
+    <hr>
+    <h6 class="fw-bold">Address</h6>
+    <textarea class="form-control" id="editUserAddress" rows="2" disabled></textarea>
+
+    <div class="text-end mt-3">
+      <button type="button" id="editBtn" class="btn btn-outline-primary btn-sm">Edit</button>
+      <button type="submit" id="saveBtn" class="btn btn-success btn-sm d-none">Save</button>
+      <button type="button" id="cancelBtn" class="btn btn-secondary btn-sm d-none">Cancel</button>
+    </div>
+  </form>
+</div>
+
         </div>
       </div>
 

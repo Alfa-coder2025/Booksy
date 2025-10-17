@@ -28,12 +28,12 @@ if(!data.success){
 const book=data.data;
 
     document.getElementById("bookMainImage").src = book.images?.[0] || "/assets/images/placeholder-book.jpg";
-      document.getElementById("bookImage").src = book.images?.[1] || "/assets/images/placeholder-book.jpg";
+      // document.getElementById("bookImage").src = book.images?.[1] || "/assets/images/placeholder-book.jpg";
     document.getElementById("authorImage").src = book.images?.[1] || "/assets/images/placeholder-author.jpg";
     document.getElementById("bookTitle").textContent = book.bookName || "Untitled Book";
-    document.getElementById("bookAuthor").textContent = book.author || "Unknown Author";
-    document.getElementById("bookPrice").textContent = book.salePrice ? `$${book.salePrice}` : "";
-    document.getElementById("bookOldPrice").textContent = book.regularPrice ? `$${book.regularPrice}` : "";
+    document.getElementById("bookAuthor").textContent = book.author?.name|| "Unknown Author";
+    document.getElementById("bookPrice").textContent = book.salePrice ? `INR ${book.salePrice}` : "";
+    document.getElementById("bookOldPrice").textContent = book.regularPrice ? `INR ${book.regularPrice}` : "";
    const stockAvailable=document.getElementById("stockQuantity");
    if(book.stockQuantity&&book.stockQuantity>0){
     stockAvailable.textContent=`In Stock :${book.stockQuantity}`;
@@ -56,14 +56,40 @@ const book=data.data;
     }
 
     if (productsBreadcrumb) {
-      const categoryId = book.categoryId?._id || ""; 
+      const categoryId = book.category?._id || ""; 
       productsBreadcrumb.href = `/user-productslisting?category=${categoryId}`;
     }
-  
 
-if (book.categoryId && book._id) {
+    // SCategory Name
+const bookCategory = document.getElementById("bookCategory");
+if (bookCategory) {
+  bookCategory.textContent = book.category?.name || "Uncategorized";
+}
+
+  // Book Meta Info
+    const bookMeta = [];
+    if (book.totalPage) bookMeta.push(`${book.totalPage} pages`);
+    if (book.language) bookMeta.push(`Language: ${book.language}`);
+    if (book.publishedDate) bookMeta.push(`Published: ${new Date(book.publishedDate).toLocaleDateString()}`);
+    if (book.coverType) bookMeta.push(`Cover: ${book.coverType}`);
+    document.getElementById("bookMeta").textContent = bookMeta.join(" | ");
+
+    // ISBN
+    document.getElementById("bookISBN").textContent = book.ISBN ? `${book.ISBN}` : "";
+
+    // Offer, Top Selling, Latest
+    const offerText = book.offer ? `Offer: ${book.offer}` : "";
+    const topSelling = book.showAsTopSelling ? "Top Selling ✅" : "";
+    const latest = book.showAsLatest ? "Latest ✅" : "";
+    document.getElementById("deliveryInfo").textContent = [offerText, topSelling, latest].filter(Boolean).join(" | ");
+
+console.log("Book data:", book);
+console.log("Category ID:", book.category?._id);
+console.log("Book ID:", book._id);
+
+if (book.category && book._id) {
   
-  loadRelatedProducts(book.categoryId._id, book._id);
+  loadRelatedProducts(book.category._id, book._id);
 }
 
 
@@ -96,6 +122,8 @@ async function loadRelatedProducts(categoryId,excludedId){
           <p class="mb-1 fw-bold">
             <a href="/user-productsview?id=${book._id}" class="text-decoration-none text-dark">${book.bookName}</a>
           </p>
+          <p class="text-muted">${book.authorId?.name || "Unknown Author"}</p>
+              <p class="text-secondary">${book.categoryId?.name || "Uncategorized"}</p>
           <p class="text-primary">₹${book.salePrice || book.regularPrice || "N/A"}</p>
         </div>
       </div>

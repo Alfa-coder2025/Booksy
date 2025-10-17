@@ -16,6 +16,7 @@ const bookSchema = new mongoose.Schema(
     regularPrice: { type: Number },
     publisher: { type: String },
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+    authorId: { type: mongoose.Schema.Types.ObjectId, ref: "Author" },
     language: { type: String },
     coverType: { type: String },
     images: { type: [String], default: [] },
@@ -27,7 +28,14 @@ const bookSchema = new mongoose.Schema(
     salePrice: { type: Number },
     totalPage: { type: Number },
     publishedDate: { type: Date },
-    cardDescription: { type: String }
+    cardDescription: { type: String },
+    ISBN: {
+  type: String,
+  required: true,
+  unique: true,
+  trim: true
+},
+
   },
   {
     collection: "Books",

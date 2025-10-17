@@ -9,12 +9,15 @@ const {
 } = require('../controllers/offer.controller');
 
 const auth = require("../middlewares/authenticateToken");
+const {ensureAdmin}=require("../middlewares/authMiddleware");
+router.use(ensureAdmin);
+
 
 // Routes
-router.get('/getAll', auth, getAllOffers);          
-router.get('/get/:id', auth, getOfferById);         
-router.post('/add', auth, createOffer);          
-router.post('/update/:id', auth, updateOffer);     
-router.delete('/delete/:id', auth, deleteOffer);   
+router.get('/getAll',getAllOffers);          
+router.get('/get/:id', getOfferById);         
+router.post('/add', createOffer);          
+router.post('/update/:id', updateOffer);     
+router.delete('/delete/:id',deleteOffer);   
 
 module.exports = router;
